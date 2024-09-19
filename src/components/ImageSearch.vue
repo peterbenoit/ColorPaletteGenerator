@@ -1,5 +1,5 @@
 <template>
-	<div class="container mx-auto mt-10 max-w-[1200px] border border-gray-100 rounded-lg shadow-lg p-8">
+	<div class="container mx-auto mt-10 max-w-[1200px] border bg-white border-gray-100 rounded-lg shadow-lg p-8">
 
 		<div class="grid grid-cols-2 gap-4">
 			<h1 class="text-3xl font-bold mb-2">Image Color Palette Generator</h1>
@@ -12,15 +12,25 @@
 			</div>
 		</div>
 		<div class="grid grid-cols-2 gap-4">
-			<div class="min-h-[400px] rounded-md bg-white">
+			<div class="min-h-[400px] rounded-md">
 				<div v-if="imageUrl">
 					<img :src="imageUrl" alt="An Image" class="w-full rounded-lg shadow-lg" />
+					<p class="mt-2 text-sm text-gray-600">
+						Photo by
+						<a :href="photographerProfile" target="_blank" class="text-blue-600">
+							{{ photographerName }}
+						</a>
+						on
+						<a href="https://unsplash.com" target="_blank" class="text-blue-600">
+							Unsplash
+						</a>
+					</p>
 				</div>
 			</div>
 
 			<div class="flex justify-between flex-col">
 				<div class="flex flex-col">
-					<div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 h-80 overflow-auto">
+					<div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 overflow-auto">
 						<pre><code class="language-css">{{ cssContent }}</code></pre>
 					</div>
 					<!--
@@ -87,7 +97,16 @@ export default {
 				const response = await axios.get(
 					`https://api.unsplash.com/photos/random?query=${this.query}&client_id=${import.meta.env.VITE_API_KEY}`
 				);
+
 				this.imageUrl = response.data.urls.regular;
+				this.photographerName = response.data.user.name;
+				this.photographerProfile = response.data.user.links.html;
+
+				// Trigger the download event
+				await axios.get(
+					`https://api.unsplash.com/photos/${response.data.id}/download?client_id=${import.meta.env.VITE_API_KEY}`
+				);
+
 				this.extractColors();
 			} catch (error) {
 				console.error('Error fetching image:', error);
@@ -255,5 +274,8 @@ pre[class*=language-] {
 
 .token.inserted {
 	color: green
+}
+.text-blue-600:hover {
+	text-decoration: underline;
 }
 </style>
