@@ -1,6 +1,5 @@
 <template>
 	<div class="container mx-auto mt-10 max-w-[1200px] border bg-white border-gray-100 rounded-lg shadow-lg p-8">
-
 		<div class="grid grid-cols-2 gap-4">
 			<h1 class="text-3xl font-bold mb-2">Image Color Palette Generator</h1>
 			<div class="flex items-center mb-4">
@@ -11,7 +10,7 @@
 				</button>
 			</div>
 		</div>
-		<div class="grid grid-cols-2 gap-4">
+		<div v-if="imageUrl" class="grid grid-cols-2 gap-4">
 			<div class="min-h-[400px] rounded-md">
 				<div v-if="imageUrl">
 					<img :src="imageUrl" alt="An Image" class="w-full rounded-lg shadow-lg" />
