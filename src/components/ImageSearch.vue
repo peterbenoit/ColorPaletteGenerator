@@ -91,7 +91,7 @@ export default {
 		async fetchImage() {
 			try {
 				const response = await axios.get(
-					`https://api.unsplash.com/photos/random?query=${this.query}&client_id=${import.meta.env.VITE_UNSPLASH_API_KEY}`
+					`https://api.unsplash.com/photos/random?query=${this.query}&client_id=${import.meta.env.API_KEY}`
 				);
 				this.imageUrl = response.data.urls.regular;
 				this.extractColors();
