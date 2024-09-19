@@ -18,12 +18,12 @@
 				</div>
 			</div>
 
-			<div class="flex flex-col justify-between">
-
-				<div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 h-80 overflow-auto">
-					<pre><code class="language-css">{{ cssContent }}</code></pre>
-				</div>
-<!--
+			<div class="flex justify-between flex-col">
+				<div class="flex flex-col">
+					<div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 h-80 overflow-auto">
+						<pre><code class="language-css">{{ cssContent }}</code></pre>
+					</div>
+					<!--
 
 				<div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 h-40 overflow-auto">
 					<pre>
@@ -50,13 +50,14 @@
     </pre>
 				</div> -->
 
-				<div v-if="colors.length > 0" class="flex justify-between mb-4">
-					<div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
-						class="w-16 h-16 rounded-full border border-black cursor-pointer" @click="applyColor(color)">
+					<div ref="paletteContainer" v-if="colors.length > 0" class="mt-6 flex justify-center space-x-4">
+						<div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
+							class="w-16 h-16 rounded-full cursor-pointer border border-black"
+							@click="applyColor(color)">
+						</div>
 					</div>
 				</div>
-
-				<div class="flex justify-end">
+				<div class="flex justify-end mt-5">
 					<button @click="exportToPNG" class="bg-green-500 text-white p-2 rounded-md">Save PNG</button>
 				</div>
 			</div>
@@ -121,7 +122,14 @@ export default {
 		},
 		async exportToPNG() {
 			const paletteContainer = this.$refs.paletteContainer;
+
+			if (!paletteContainer) {
+				console.error('Palette container is not found');
+				return;
+			}
+
 			try {
+				// Convert the referenced container to PNG
 				const canvas = await html2canvas(paletteContainer);
 				const link = document.createElement('a');
 				link.href = canvas.toDataURL('image/png');
