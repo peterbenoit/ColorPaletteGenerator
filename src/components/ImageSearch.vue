@@ -1,10 +1,8 @@
 <template>
 	<div class="container mx-auto mt-10 max-w-[1200px] border border-gray-100 rounded-lg shadow-lg p-8">
-		<!-- Title -->
 
 		<div class="grid grid-cols-2 gap-4">
 			<h1 class="text-3xl font-bold mb-2">Image Color Palette Generator</h1>
-			<!-- Input and Submit Button -->
 			<div class="flex items-center mb-4">
 				<input v-model="query" type="text" placeholder="Search for an image..."
 					class="border border-gray-100 p-2 rounded-md shadow-sm w-full" @keydown.enter="fetchImage" />
@@ -14,17 +12,14 @@
 			</div>
 		</div>
 		<div class="grid grid-cols-2 gap-4">
-			<!-- Image -->
-			<div class="min-h-[400px] rounded-md">
+			<div class="min-h-[400px] rounded-md bg-white">
 				<div v-if="imageUrl">
 					<img :src="imageUrl" alt="An Image" class="w-full rounded-lg shadow-lg" />
 				</div>
 			</div>
 
-			<!-- Right Column with Input, CSS Box, Colors, Save Button -->
 			<div class="flex flex-col justify-between">
 
-				<!-- CSS Box -->
 				<div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 h-80 overflow-auto">
 					<pre><code class="language-css">{{ cssContent }}</code></pre>
 				</div>
@@ -55,14 +50,12 @@
     </pre>
 				</div> -->
 
-				<!-- Color Circles -->
 				<div v-if="colors.length > 0" class="flex justify-between mb-4">
 					<div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
 						class="w-16 h-16 rounded-full border border-black cursor-pointer" @click="applyColor(color)">
 					</div>
 				</div>
 
-				<!-- Save PNG Button -->
 				<div class="flex justify-end">
 					<button @click="exportToPNG" class="bg-green-500 text-white p-2 rounded-md">Save PNG</button>
 				</div>
@@ -75,7 +68,7 @@
 import axios from 'axios';
 import ColorThief from 'colorthief';
 import html2canvas from 'html2canvas';
-import Prism from 'prismjs'; // Include Prism.js for syntax highlighting
+import Prism from 'prismjs';
 
 export default {
 	data() {
@@ -84,7 +77,7 @@ export default {
 			imageUrl: '',
 			colors: [],
 			paletteHistory: [],
-			cssContent: '', // Holds the generated CSS content
+			cssContent: '',
 		};
 	},
 	methods: {
@@ -111,7 +104,7 @@ export default {
 						(color) => `rgb(${color[0]}, ${color[1]}, ${color[2]})`
 					);
 					this.generateCSS();
-					Prism.highlightAll(); // Apply syntax highlighting
+					Prism.highlightAll();
 				} catch (error) {
 					console.error('Error extracting colors:', error);
 				}
@@ -143,8 +136,6 @@ export default {
 </script>
 
 <style scoped>
-
-/* Prism.js styles for code highlighting */
 code[class*=language-],
 pre[class*=language-] {
 	color: #ccc;
