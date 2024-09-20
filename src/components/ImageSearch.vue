@@ -1,10 +1,10 @@
 <template>
-  <div class="container mx-auto mt-10 max-w-[1200px] border bg-white border-gray-100 rounded-lg shadow-lg p-8">
+  <div class="container mx-auto mt-10 max-w-[1200px] border bg-white/50 border-gray-100 rounded-lg shadow-lg p-8">
     <div class="grid grid-cols-2 gap-4">
       <h1 class="flex items-center text-3xl font-bold mb-2">
         Image Color Palette Generator
-        <a class="ml-2" href="https://github.com/peterbenoit/ColorPaletteGenerator" style="display: inline;">
-          <!-- svg -->
+        <a class="ml-2 text-sm" href="https://github.com/peterbenoit/ColorPaletteGenerator">
+          <i class="fa-brands fa-github"></i>
         </a>
       </h1>
       <div class="flex flex-col mb-4 text-end">
@@ -156,11 +156,11 @@ export default {
 	toggleVoiceSearch() {
 	if (annyang) {
 		if (this.listening) {
-		annyang.abort(); // Stop listening
+		annyang.abort();
 		} else {
-		this.startVoiceSearch(); // Start listening
+		this.startVoiceSearch();
 		}
-		this.listening = !this.listening; // Toggle listening state
+		this.listening = !this.listening;
 	} else {
 		console.error('Annyang is not supported in this browser');
 	}
