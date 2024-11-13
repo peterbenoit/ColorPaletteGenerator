@@ -37,20 +37,42 @@
 
       <div class="flex justify-between flex-col">
         <div class="flex flex-col">
-          <div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 overflow-auto relative">
+          <div class="relative p-4 bg-gray-100 shadow-inner rounded-md mb-4 overflow-auto">
             <pre><code class="language-css">{{ cssContent }}</code></pre>
-            <button @click="copyCSSToClipboard" class="absolute bg-[#ccc] text-black p-1 rounded-md top-[25px] right-[18px] text-sm">Copy CSS</button>
+            <button @click="copyCSSToClipboard" class="absolute top-[26px] right-[18px] bg-[#ccc] text-black p-1 rounded-md">Copy CSS</button>
           </div>
 
           <div ref="paletteContainer" v-if="colors.length > 0" class="mt-6 flex justify-center space-x-4">
             <div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
-              class="w-16 h-16 rounded-full cursor-pointer border border-black"
+              class="w-16 h-16 cursor-pointer border border-black rounded-full"
               @click="applyColor(color)">
             </div>
           </div>
         </div>
         <div class="flex justify-end mt-5">
           <button @click="exportToPNG" class="bg-green-500 text-white p-2 rounded-md">Save PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Placeholder sections -->
+    <div v-else class="grid grid-cols-2 gap-4">
+      <div class="min-h-[400px] rounded-md bg-gray-200 animate-pulse"></div>
+      <div class="flex justify-between flex-col">
+        <div class="flex flex-col">
+          <div class="min-h-[200px] p-4 bg-gray-200 shadow-inner rounded-md mb-4 overflow-auto animate-pulse"></div>
+          <div class="mt-6 flex justify-center space-x-4">
+            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+          </div>
+        </div>
+        <div class="flex justify-end mt-5">
+          <button class="bg-gray-200 text-white p-2 rounded-md animate-pulse">Save PNG</button>
         </div>
       </div>
     </div>
@@ -328,5 +350,18 @@ pre[class*=language-] {
 }
 .text-blue-600:hover {
   text-decoration: underline;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
 }
 </style>
