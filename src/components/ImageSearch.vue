@@ -109,7 +109,7 @@ export default {
     async fetchImage() {
       try {
         const response = await axios.get(
-          `https://api.unsplash.com/photos/random?query=${this.query}&client_id=${import.meta.env.VITE_API_KEY}`
+          `https://api.unsplash.com/photos/random?query=${this.query}&orientation=landscape&client_id=${import.meta.env.VITE_API_KEY}`
         );
 
         this.imageUrl = response.data.urls.regular;
