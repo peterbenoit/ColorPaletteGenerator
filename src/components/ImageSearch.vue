@@ -132,7 +132,29 @@ export default {
       }
 
       try {
-        const canvas = await html2canvas(paletteContainer);
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        const size = 100; // Size of each color square
+
+        canvas.width = size * this.colors.length;
+        canvas.height = size;
+
+        this.colors.forEach((color, index) => {
+          const x = index * size;
+          const y = 0;
+
+          // Draw the color square
+          context.fillStyle = color;
+          context.fillRect(x, y, size, size);
+
+          // Draw the HEX value centered
+          context.fillStyle = '#000';
+          context.font = '16px Arial';
+          context.textAlign = 'center';
+          context.textBaseline = 'middle';
+          context.fillText(this.rgbToHex(color), x + size / 2, y + size / 2);
+        });
+
         const link = document.createElement('a');
         link.href = canvas.toDataURL('image/png');
         link.download = 'color-palette.png';
@@ -140,6 +162,13 @@ export default {
       } catch (error) {
         console.error('Error exporting to PNG:', error);
       }
+    },
+    rgbToHex(rgb) {
+      const result = rgb.match(/\d+/g).map((num) => {
+        const hex = parseInt(num).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      });
+      return `#${result.join('')}`;
     },
 	startVoiceSearch() {
 	if (annyang) {
