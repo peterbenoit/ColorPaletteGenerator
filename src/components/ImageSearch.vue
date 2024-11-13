@@ -13,8 +13,8 @@
             class="border border-gray-100 p-2 rounded-md shadow-sm w-full" @keydown.enter="fetchImage" />
           <button @click="fetchImage" class="ml-2 bg-blue-500 text-white p-2 rounded-md">Search</button>
           <button @click="toggleVoiceSearch" class="ml-2 bg-green-500 text-white p-2 rounded-md w-[50px]">
-			<i :class="listening ? 'fas fa-microphone-slash' : 'fas fa-microphone'"></i>
-		</button>
+            <i :class="listening ? 'fas fa-microphone-slash' : 'fas fa-microphone'"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -37,8 +37,9 @@
 
       <div class="flex justify-between flex-col">
         <div class="flex flex-col">
-          <div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 overflow-auto">
+          <div class="p-4 bg-gray-100 shadow-inner rounded-md mb-4 overflow-auto relative">
             <pre><code class="language-css">{{ cssContent }}</code></pre>
+            <button @click="copyCSSToClipboard" class="absolute bg-[#ccc] text-black p-1 rounded-md top-[25px] right-[18px] text-sm">Copy CSS</button>
           </div>
 
           <div ref="paletteContainer" v-if="colors.length > 0" class="mt-6 flex justify-center space-x-4">
@@ -165,6 +166,13 @@ export default {
 		console.error('Annyang is not supported in this browser');
 	}
 	},
+	copyCSSToClipboard() {
+      navigator.clipboard.writeText(this.cssContent).then(() => {
+        console.log('CSS copied to clipboard');
+      }).catch((error) => {
+        console.error('Error copying CSS to clipboard:', error);
+      });
+    },
   },
 };
 </script>
