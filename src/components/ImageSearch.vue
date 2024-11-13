@@ -1,78 +1,86 @@
 <template>
-  <div class="container mx-auto mt-10 max-w-[1200px] border bg-white/50 border-gray-100 rounded-lg shadow-lg p-8">
-    <div class="grid grid-cols-2 gap-4">
-      <h1 class="flex items-center text-3xl font-bold mb-2">
-        Image Color Palette Generator
-        <a class="ml-2 text-sm" href="https://github.com/peterbenoit/ColorPaletteGenerator">
-          <i class="fa-brands fa-github"></i>
-        </a>
-      </h1>
-      <div class="flex flex-col mb-4 text-end">
-        <div class="flex">
-          <input v-model="query" type="text" placeholder="Search for an image..."
-            class="border border-gray-100 p-2 rounded-md shadow-sm w-full" @keydown.enter="fetchImage" />
-          <button @click="fetchImage" class="ml-2 bg-blue-500 text-white p-2 rounded-md">Search</button>
-          <button @click="toggleVoiceSearch" class="ml-2 bg-green-500 text-white p-2 rounded-md w-[50px]">
-            <i :class="listening ? 'fas fa-microphone-slash' : 'fas fa-microphone'"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div v-if="imageUrl" class="grid grid-cols-2 gap-4">
-      <div class="min-h-[400px] rounded-md">
-        <div v-if="imageUrl">
-          <img :src="imageUrl" alt="An Image" class="w-full rounded-lg shadow-lg" />
-          <p class="mt-2 text-sm text-gray-600">
-            Photo by
-            <a :href="photographerProfile" target="_blank" class="text-blue-600">
-              {{ photographerName }}
-            </a>
-            on
-            <a href="https://unsplash.com" target="_blank" class="text-blue-600">
-              Unsplash
-            </a>
-          </p>
-        </div>
-      </div>
-
-      <div class="flex justify-between flex-col">
-        <div class="flex flex-col">
-          <div class="relative p-4 bg-gray-100 shadow-inner rounded-md mb-4 overflow-auto">
-            <pre><code class="language-css">{{ cssContent }}</code></pre>
-            <button @click="copyCSSToClipboard" class="absolute top-[26px] right-[18px] bg-[#ccc] text-black p-1 rounded-md">Copy CSS</button>
+  <div class="container mx-auto mt-10 max-w-[1200px]">
+    <h1 class="text-4xl font-bold mb-2 text-center">
+      🎨 Image Color Palette Generator
+      <a class="ml-2 text-sm" href="https://github.com/peterbenoit/ColorPaletteGenerator">
+        <i class="fa-brands fa-github"></i>
+      </a>
+    </h1>
+    <p class="my-6 text-sm max-w-[1000px] mx-auto">
+      The Image Color Palette Generator allows you to generate a color palette from a random image based on your search query using the <a href="https://unsplash.com" target="_blank" class="text-blue-600">Unsplash API</a> 📸.
+      Either enter a keyword, click "Search", or you can also use voice search powered by the <a href="https://www.talater.com/annyang/" target="_blank" class="text-blue-600">annyang Voice API</a> 🎤.
+      Once the palette is generated, you can copy the CSS or save the color palette as a PNG. 🖼️
+    </p>
+    <div class="border bg-white/50 border-gray-100 rounded-lg shadow-lg p-8">
+      <div class="grid grid-cols-2 gap-4">
+		<div></div>
+        <div class="flex flex-col mb-4 text-end">
+          <div class="flex">
+            <input v-model="query" type="text" placeholder="Search for an image..."
+              class="border border-gray-100 p-2 rounded-md shadow-sm w-full" @keydown.enter="fetchImage" />
+            <button @click="fetchImage" class="ml-2 bg-blue-500 text-white p-2 rounded-md">Search</button>
+            <button @click="toggleVoiceSearch" class="ml-2 bg-green-500 text-white p-2 rounded-md w-[50px]">
+              <i :class="listening ? 'fas fa-microphone-slash' : 'fas fa-microphone'"></i>
+            </button>
           </div>
+        </div>
+      </div>
+      <div v-if="imageUrl" class="grid grid-cols-2 gap-4">
+        <div class="min-h-[400px] rounded-md">
+          <div v-if="imageUrl">
+            <img :src="imageUrl" alt="An Image" class="w-full rounded-lg shadow-lg" />
+            <p class="mt-2 text-sm text-gray-600">
+              Photo by
+              <a :href="photographerProfile" target="_blank" class="text-blue-600">
+                {{ photographerName }}
+              </a>
+              on
+              <a href="https://unsplash.com" target="_blank" class="text-blue-600">
+                Unsplash
+              </a>
+            </p>
+          </div>
+        </div>
 
-          <div ref="paletteContainer" v-if="colors.length > 0" class="mt-6 flex justify-center space-x-4">
-            <div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
-              class="w-16 h-16 cursor-pointer border border-black rounded-full"
-              @click="applyColor(color)">
+        <div class="flex justify-between flex-col">
+          <div class="flex flex-col">
+            <div class="relative p-4 bg-gray-100 shadow-inner rounded-md mb-4 overflow-auto">
+              <pre><code class="language-css">{{ cssContent }}</code></pre>
+              <button @click="copyCSSToClipboard" class="absolute top-[26px] right-[18px] bg-[#ccc] text-black p-1 rounded-md">Copy CSS</button>
+            </div>
+
+            <div ref="paletteContainer" v-if="colors.length > 0" class="mt-6 flex justify-center space-x-4">
+              <div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
+                class="w-16 h-16 cursor-pointer border border-black rounded-full"
+                @click="applyColor(color)">
+              </div>
             </div>
           </div>
-        </div>
-        <div class="flex justify-end mt-5">
-          <button @click="exportToPNG" class="bg-green-500 text-white p-2 rounded-md">Save PNG</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Placeholder sections -->
-    <div v-else class="grid grid-cols-2 gap-4">
-      <div class="min-h-[400px] rounded-md bg-gray-200 animate-pulse"></div>
-      <div class="flex justify-between flex-col">
-        <div class="flex flex-col">
-          <div class="min-h-[200px] p-4 bg-gray-200 shadow-inner rounded-md mb-4 overflow-auto animate-pulse"></div>
-          <div class="mt-6 flex justify-center space-x-4">
-            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
-            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
-            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
-            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
-            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
-            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
-            <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+          <div class="flex justify-end mt-5">
+            <button @click="exportToPNG" class="bg-green-500 text-white p-2 rounded-md">Save PNG</button>
           </div>
         </div>
-        <div class="flex justify-end mt-5">
-          <button class="bg-gray-200 text-white p-2 rounded-md animate-pulse">Save PNG</button>
+      </div>
+
+      <!-- Placeholder sections -->
+      <div v-else class="grid grid-cols-2 gap-4">
+        <div class="min-h-[400px] rounded-md bg-gray-200 animate-pulse"></div>
+        <div class="flex justify-between flex-col">
+          <div class="flex flex-col">
+            <div class="min-h-[200px] p-4 bg-gray-200 shadow-inner rounded-md mb-4 overflow-auto animate-pulse"></div>
+            <div class="mt-6 flex justify-center space-x-4">
+              <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+              <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+              <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+              <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+              <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+              <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+              <div class="w-16 h-16 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+          <div class="flex justify-end mt-5">
+            <button class="bg-gray-200 text-white p-2 rounded-md animate-pulse">Save PNG</button>
+          </div>
         </div>
       </div>
     </div>
