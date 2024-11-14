@@ -28,7 +28,7 @@
 				<!-- Image Card -->
 				<div class="card-height rounded-md">
 					<img :src="imageUrl" alt="An Image" class="w-full rounded-lg shadow-lg" />
-					<p class="mt-2 text-sm text-gray-600">
+					<p v-if="isUnsplashImage" class="mt-2 text-sm text-gray-600">
 						Photo by
 						<a :href="photographerProfile" target="_blank" class="text-blue-600">
 							{{ photographerName }}
@@ -52,7 +52,7 @@
 
 						<div ref="paletteContainer" v-if="colors.length > 0" class="mt-6 flex justify-center space-x-4">
 							<div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
-								class="w-8 h-8 lg:w-16 lg:h-16 cursor-pointer border border-black rounded-full"
+								class="w-16 h-16 cursor-pointer border border-black rounded-full"
 								@click="applyColor(color)">
 							</div>
 						</div>
@@ -95,7 +95,6 @@
 <script>
 import axios from 'axios';
 import ColorThief from 'colorthief';
-import html2canvas from 'html2canvas';
 import Prism from 'prismjs';
 import annyang from 'annyang';
 import Header from './Header.vue';
@@ -110,6 +109,7 @@ export default {
 			paletteHistory: [],
 			cssContent: "",
 			listening: false,
+			isUnsplashImage: false,
 		};
 	},
 	methods: {
@@ -119,6 +119,7 @@ export default {
 				this.imageUrl = response.data.urls.regular;
 				this.photographerName = response.data.user.name;
 				this.photographerProfile = response.data.user.links.html;
+				this.isUnsplashImage = true;
 				// Trigger the download event
 				await axios.get(`https://api.unsplash.com/photos/${response.data.id}/download?client_id=${import.meta.env.VITE_API_KEY}`);
 				this.extractColors();
@@ -137,6 +138,7 @@ export default {
 					const reader = new FileReader();
 					reader.onload = async (event) => {
 						this.imageUrl = event.target.result;
+						this.isUnsplashImage = false;
 						this.extractColors();
 					};
 					reader.readAsDataURL(file);
