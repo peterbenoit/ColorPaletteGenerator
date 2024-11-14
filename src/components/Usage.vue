@@ -47,7 +47,8 @@
 				<h3 class="mt-2 font-semibold text-gray-800">Save or Copy CSS</h3>
 				<p class="text-gray-600 mt-1">
 					Click the <span class="bg-gray-200 px-2 py-1 rounded-md">Copy CSS</span> button to copy color
-					variables to your clipboard or the <span class="bg-green-500 text-white px-2 py-1 rounded-md">Save
+					variables to your clipboard or the <span
+						class="bg-green-500 text-white px-2 py-1 rounded-md whitespace-nowrap">Save
 						PNG</span> button to download the palette as a PNG.
 				</p>
 			</div>

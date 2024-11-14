@@ -82,7 +82,8 @@
 						</div>
 					</div>
 					<div class="flex justify-end mt-5">
-						<button class="bg-gray-200 text-white p-2 rounded-md animate-pulse">Save PNG</button>
+						<button class="bg-gray-200 text-white p-2 rounded-md animate-pulse">Save
+							PNG</button>
 					</div>
 				</div>
 			</div>
