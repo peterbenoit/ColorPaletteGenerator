@@ -58,9 +58,9 @@ Generate a color palette from a random image based on your search query using th
 -   **Prism.js**: Syntax highlighting library for displaying CSS code with color previews.
 -   **annyang**: Voice recognition library for enabling voice search functionality.
 
-## Live Demo
+## Production
 
-Check out the live demo: [Color Palette Generator](https://color-palette-generator-chi.vercel.app/)
+[Color Palette Generator](https://color-palette-generator-chi.vercel.app/)
 
 ## Screenshots
 
