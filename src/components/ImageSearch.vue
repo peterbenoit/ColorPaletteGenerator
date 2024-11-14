@@ -87,6 +87,8 @@
 				</div>
 			</div>
 		</div>
+
+		<Usage />
 	</div>
 </template>
 
@@ -97,6 +99,7 @@ import html2canvas from 'html2canvas';
 import Prism from 'prismjs';
 import annyang from 'annyang';
 import Header from './Header.vue';
+import Usage from './Usage.vue';
 
 export default {
 	data() {
@@ -241,7 +244,8 @@ export default {
 		},
 	},
 	components: {
-		Header
+		Header,
+		Usage
 	},
 };
 </script>
