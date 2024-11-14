@@ -3,7 +3,7 @@
 		<Header />
 
 		<!-- Main Content Section -->
-		<div class="border bg-white/50 border-gray-100 rounded-lg shadow-lg p-8 m-8">
+		<div class="border bg-white/50 border-gray-100 rounded-lg shadow-lg p-4 m-4 md:p-8 md:m-8">
 			<!-- Search Input Section -->
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 				<div class="hidden md:block"></div>
@@ -52,7 +52,7 @@
 
 						<div ref="paletteContainer" v-if="colors.length > 0" class="mt-6 flex justify-center space-x-4">
 							<div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
-								class="w-16 h-16 cursor-pointer border border-black rounded-full"
+								class="w-8 h-8 lg:w-16 lg:h-16 cursor-pointer border border-black rounded-full"
 								@click="applyColor(color)">
 							</div>
 						</div>

@@ -1,5 +1,5 @@
 <template>
-	<div class="mt-8">
+	<div class="container mx-auto p-4 m-4 md:m-8 md:p-8">
 		<h2 class="text-2xl font-semibold">How to Use</h2>
 		<div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 
