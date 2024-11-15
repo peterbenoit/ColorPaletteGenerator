@@ -30,11 +30,15 @@
 					<img :src="imageUrl" alt="An Image" class="w-full rounded-lg shadow-lg" />
 					<p v-if="isUnsplashImage" class="mt-2 text-sm text-gray-600">
 						Photo by
-						<a :href="photographerProfile" target="_blank" class="text-blue-600">
+						<a :href="`${photographerProfile}?utm_source=image_color_palette_generator&utm_medium=referral&utm_campaign=api-credit`"
+							target="_blank"
+							class="text-blue-600">
 							{{ photographerName }}
 						</a>
 						on
-						<a href="https://unsplash.com" target="_blank" class="text-blue-600">
+						<a href="https://unsplash.com?utm_source=image_color_palette_generator&utm_medium=referral&utm_campaign=api-credit"
+							target="_blank"
+							class="text-blue-600">
 							Unsplash
 						</a>
 					</p>
