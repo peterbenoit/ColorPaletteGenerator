@@ -97,10 +97,11 @@
 								</span>
 							</h3>
 							<div ref="paletteContainer" v-if="colors.length > 0"
-								class="mt-2 flex flex-wrap justify-center gap-4">
+								class="mt-2 flex flex-wrap justify-center gap-2">
 								<div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
-									class="w-14 h-14 lg:w-16 lg:h-16 cursor-pointer rounded-full shadow-md transform hover:scale-110 transition-all border-2 border-white/50"
-									:class="{ 'ring-4 ring-blue-400': activeColor === color }" @click="applyColor(color)">
+									class="w-10 h-10 lg:w-10 lg:h-10 cursor-pointer rounded-full shadow-md transform hover:scale-110 transition-all border-2 border-white/50"
+									:class="{ 'ring-4 ring-blue-400': activeColor === color }"
+									@click="applyColor(color)">
 									<div
 										class="tooltip opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 absolute bottom-full left-1/2 -translate-x-1/2 mb-2">
 										{{ rgbToHex(color) }}
@@ -154,7 +155,7 @@
 				<div class="aspect-video bg-gray-200 animate-pulse rounded-xl"></div>
 				<div class="flex flex-col gap-6">
 					<div class="h-[200px] bg-gray-200 shadow-inner rounded-xl animate-pulse"></div>
-					<div class="mt-2 flex justify-center gap-4">
+					<div class="mt-2 flex justify-center gap-2">
 						<div v-for="i in 7" :key="i"
 							class="w-14 h-14 lg:w-16 lg:h-16 bg-gray-200 rounded-full animate-pulse"></div>
 					</div>

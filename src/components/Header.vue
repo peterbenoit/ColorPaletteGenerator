@@ -27,7 +27,7 @@
 					</svg>
 				</div>
 				<h1
-					class="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+					class="text-3xl md:text-4xl lg:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 leading-[2.6]">
 					Image Color Palette Generator
 				</h1>
 			</div>

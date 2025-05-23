@@ -1,7 +1,6 @@
 <template>
 	<div class="app-container">
 		<ImageSearch />
-		<Usage />
 		<footer class="mt-12 py-6 text-center border-t border-gray-100 bg-white/60 backdrop-blur-sm">
 			<div class="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
 				<div class="mb-4 md:mb-0">
@@ -68,13 +67,11 @@
 
 <script>
 import ImageSearch from './components/ImageSearch.vue';
-import Usage from './components/Usage.vue';
 
 export default {
 	name: 'App',
 	components: {
 		ImageSearch,
-		Usage,
 	},
 	data() {
 		return {
@@ -156,6 +153,10 @@ a:after {
 
 a:hover:after {
 	width: 100%;
+}
+
+h1 {
+	line-height: 2.6 !important;
 }
 
 /* Add subtle hover effect to buttons */
