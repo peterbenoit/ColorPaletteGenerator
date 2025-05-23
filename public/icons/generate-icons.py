@@ -5,13 +5,15 @@ import argparse
 from PIL import Image, ImageDraw
 import io
 
-def generate_icons(logo_path, output_dir='.'):
+def generate_icons(logo_path, output_dir='.', create_transparent=False, threshold=240):
     """
     Generate various icon sizes from a source logo file
 
     Args:
         logo_path (str): Path to the source logo file
         output_dir (str): Directory to save generated icons
+        create_transparent (bool): Whether to create additional versions with transparent backgrounds
+        threshold (int): Brightness threshold for background removal (0-255)
     """
     print(f"Generating icons from {logo_path}...")
 
@@ -23,6 +25,15 @@ def generate_icons(logo_path, output_dir='.'):
         source_img = Image.open(logo_path)
         # Convert to RGBA to ensure transparency support
         source_img = source_img.convert("RGBA")
+
+        # Create transparent version of source image if requested
+        if create_transparent:
+            file_name = os.path.basename(logo_path)
+            name, ext = os.path.splitext(file_name)
+            transparent_img = remove_background(source_img, threshold=threshold)
+            transparent_path = os.path.join(output_dir, f"{name}-transparent{ext}")
+            transparent_img.save(transparent_path)
+            print(f"Generated transparent version: {transparent_path}")
     except Exception as e:
         print(f"Error opening image: {e}")
         return
@@ -56,6 +67,19 @@ def generate_icons(logo_path, output_dir='.'):
             output_path = os.path.join(output_dir, filename)
             icon.save(output_path)
             print(f"Generated: {output_path}")
+
+            # Generate transparent version if requested
+            if create_transparent:
+                # Get filename parts
+                name, ext = os.path.splitext(filename)
+                # Create transparent version
+                transparent_icon = Image.new('RGBA', size, (0, 0, 0, 0))
+                transparent_img = remove_background(resized_img, threshold=threshold)
+                transparent_icon.paste(transparent_img, position, transparent_img)
+                # Save with -transparent suffix
+                transparent_path = os.path.join(output_dir, f"{name}-transparent{ext}")
+                transparent_icon.save(transparent_path)
+                print(f"Generated transparent version: {transparent_path}")
 
         except Exception as e:
             print(f"Error generating {filename}: {e}")
@@ -97,6 +121,19 @@ def generate_icons(logo_path, output_dir='.'):
         og_image.save(og_output_path, quality=90)
         print(f"Generated: {og_output_path}")
 
+        # Create transparent version of OG image if requested
+        if create_transparent:
+            # For OG image, we need to create a PNG with transparency
+            transparent_og = Image.new('RGBA', og_size, (0, 0, 0, 0))
+            # Process the logo with background removal
+            transparent_logo = remove_background(logo_resized, threshold=threshold)
+            # Paste on transparent background
+            transparent_og.paste(transparent_logo, position, transparent_logo)
+            # Save transparent OG image as PNG (JPG doesn't support transparency)
+            transparent_og_path = os.path.join(output_dir, 'og-image-transparent.png')
+            transparent_og.save(transparent_og_path)
+            print(f"Generated transparent OG image: {transparent_og_path}")
+
     except Exception as e:
         print(f"Error generating OG image: {e}")
 
@@ -113,8 +150,14 @@ def generate_icons(logo_path, output_dir='.'):
         print(f"Error generating Safari SVG: {e}")
 
     print("\nIcon generation complete!")
-    print("\nNote: favicon.ico is not included in this script as it requires multi-size ICO format.")
-    print("Consider using an online service like https://realfavicongenerator.net/ for favicon.ico")
+
+    if create_transparent:
+        print("\nGenerated transparent versions with background removed.")
+        print(f"Threshold used for background removal: {threshold}")
+        print("You may need to adjust the threshold for optimal results with different images.")
+
+    print("\nNote: favicon.ico is included but for best results, consider using")
+    print("an online service like https://realfavicongenerator.net/ for improved favicon.ico files.")
 
 def resize_maintain_aspect_ratio(image, target_size):
     """
@@ -199,9 +242,8 @@ def create_simple_svg_silhouette(image, output_path):
 </svg>"""
             # Skip the rest of processing
 
-        # Close SVG tags if we're using the detailed approach
-        if not isinstance(e, IndexError):
-            svg_content += "  </g>\n</svg>"
+        # Close SVG tags
+        svg_content += "  </g>\n</svg>"
 
         # Write to file
         with open(output_path, 'w') as f:
@@ -226,13 +268,43 @@ def create_simple_svg_silhouette(image, output_path):
             print(f"Could not create fallback SVG: {fallback_error}")
             return False
 
+def remove_background(image, threshold=240):
+    """
+    Remove the background from an image, making it transparent.
+
+    Args:
+        image (PIL.Image): Source image
+        threshold (int): Pixel brightness threshold (0-255) to determine background (default: 240)
+
+    Returns:
+        PIL.Image: Image with transparent background
+    """
+    # Make sure image is in RGBA mode
+    img = image.convert("RGBA")
+    data = img.getdata()
+
+    new_data = []
+    for item in data:
+        # Check if the pixel is "light" (background)
+        # You may need to adjust the threshold or logic for your specific images
+        if item[0] > threshold and item[1] > threshold and item[2] > threshold:
+            # Replace with transparent pixel
+            new_data.append((255, 255, 255, 0))  # Fully transparent
+        else:
+            new_data.append(item)  # Keep original pixel
+
+    img.putdata(new_data)
+    return img
+
 if __name__ == "__main__":
     # Set up command line arguments
     parser = argparse.ArgumentParser(description='Generate website icon files from a source image')
     parser.add_argument('logo_path', help='Path to the source logo file')
     parser.add_argument('-o', '--output-dir', default='.', help='Directory to save generated icons (default: current directory)')
+    parser.add_argument('-t', '--transparent', action='store_true', help='Create additional versions with transparent backgrounds')
+    parser.add_argument('--threshold', type=int, default=240, help='Brightness threshold for background removal (0-255, default: 240)')
 
     args = parser.parse_args()
 
     # Call the icon generation function with provided parameters
-    generate_icons(args.logo_path, args.output_dir)
+    generate_icons(args.logo_path, args.output_dir, create_transparent=args.transparent, threshold=args.threshold)
