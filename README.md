@@ -92,9 +92,17 @@ Generate beautiful color palettes from images with ease. Perfect for designers, 
 ## How to Use
 
 1. Enter a keyword and click "Search" to fetch a random image from Unsplash.
-2. Use voice search by clicking the microphone icon.
-3. View the generated color palette.
-4. Copy the CSS or save the palette as a PNG.
+2. Use voice search by clicking the microphone icon or upload your own image.
+3. View the generated color palette with the following options:
+    - Switch between different color formats (HEX, RGB, HSL) using the format toggle.
+    - Lock specific colors to keep them while generating new palettes.
+    - Adjust palette size (5, 7, or 9 colors) from the settings menu.
+    - Drag and reorder colors to customize your palette.
+4. Save your work:
+    - Copy the CSS with one click to use in your projects.
+    - Download the palette as a PNG image.
+    - View your palette history to recall previously generated color schemes.
+5. Get real-time notifications for successful actions and helpful tips.
 
 ## Environment Variables
 
@@ -126,11 +134,3 @@ To comply with the Unsplash API guidelines:
 ## Contributing
 
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
-
-## Author
-
--   **Peter Benoit**
-
-## Contact
-
-If you have any questions, feel free to reach out to me via GitHub or other platforms.
