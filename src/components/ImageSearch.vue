@@ -227,7 +227,7 @@ export default {
 			},
 			suggestions: [
 				"nature", "ocean", "mountains", "city", "sunset",
-				"architecture", "food", "flowers", "animals", "abstract"
+				"architecture", "food", "flowers", "animals"
 			]
 		};
 	},
