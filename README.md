@@ -1,14 +1,36 @@
-# Image Color Palette Generator 🎨
+# Color Palette Generator 🎨✨
 
-Generate a color palette from a random image based on your search query using the Unsplash API. 📸
+> AI-powered color palette extraction from any image
 
-## Features
+![License](https://img.shields.io/github/license/peterbenoit/ColorPaletteGenerator)
+![Vue.js](https://img.shields.io/badge/Vue.js-v3.4-42b883)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v3.4-38bdf8)
+![PWA Ready](https://img.shields.io/badge/PWA-Ready-5a0fc8)
 
--   Search for images using keywords
--   Generate a color palette from the image
--   Copy the generated CSS
--   Save the color palette as a PNG
--   Use voice search powered by the annyang Voice API 🎤
+Generate beautiful color palettes from images with ease. Perfect for designers, developers, and creatives looking for unique color inspiration.
+
+![Screenshot](./public/screenshots/Screenshot1.png)
+
+## ✨ Features
+
+-   **AI-Powered Color Extraction** - Extract dominant colors from any image
+-   **Multiple Input Methods**:
+    -   🔍 Search Unsplash library with keywords
+    -   🎤 Voice commands for hands-free operation
+    -   📤 Upload your own images
+-   **Advanced Color Information**:
+    -   HEX, RGB, and HSL color formats
+    -   Color accessibility information
+    -   Color scheme suggestions
+-   **Export Options**:
+    -   📋 Copy CSS variables with one click
+    -   🖼️ Download palettes as PNG images
+    -   📱 Save palettes for offline access (PWA)
+-   **User Experience**:
+    -   🌙 Responsive design for all devices
+    -   ⚡ Fast performance with optimized loading
+    -   👆 Drag and reorder colors
+    -   🎉 Delightful animations and interactions
 
 ## Setup
 
@@ -22,8 +44,8 @@ Generate a color palette from a random image based on your search query using th
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/yourusername/color-palette-generator.git
-    cd color-palette-generator
+    git clone https://github.com/peterbenoit/ColorPaletteGenerator.git
+    cd ColorPaletteGenerator
     ```
 
 2. Install dependencies:
