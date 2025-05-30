@@ -34,7 +34,7 @@
 			<p class="text-gray-700 mt-2 max-w-3xl mx-auto text-lg">
 				Generate beautiful color palettes from images with ease. Whether you're a designer, developer, or just
 				looking for inspiration, this tool lets you create color palettes directly from images using the
-				<a href="https://unsplash.com" target="_blank" class="text-blue-600 hover:underline">Unsplash API</a>.
+				<a href="https://unsplash.com" target="_blank" class="text-blue-600">Unsplash API</a>.
 				Search by keyword, use voice search, or upload an image to start.
 			</p>
 			<div class="flex flex-wrap justify-center gap-3 mt-4">

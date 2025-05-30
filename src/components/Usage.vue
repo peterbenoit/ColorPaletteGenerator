@@ -13,7 +13,7 @@
 		<div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
 			<!-- Step 1 -->
 			<div
-				class="flex flex-col items-start p-6 rounded-xl shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group relative overflow-hidden">
+				class="flex flex-col items-start p-6 rounded-xl shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 hover:shadow-xl transition-all duration-300 transform group relative overflow-hidden">
 				<div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-blue-400 to-indigo-500"></div>
 				<div class="flex items-center space-x-2 mb-3">
 					<div
@@ -38,7 +38,7 @@
 
 			<!-- Step 2 -->
 			<div
-				class="flex flex-col items-start p-6 rounded-xl shadow-lg bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group relative overflow-hidden">
+				class="flex flex-col items-start p-6 rounded-xl shadow-lg bg-gradient-to-br from-yellow-50 to-amber-50 border border-yellow-100 hover:shadow-xl transition-all duration-300 transform group relative overflow-hidden">
 				<div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-yellow-400 to-amber-500"></div>
 				<div class="flex items-center space-x-2 mb-3">
 					<div
@@ -60,7 +60,7 @@
 
 			<!-- Step 3 -->
 			<div
-				class="flex flex-col items-start p-6 rounded-xl shadow-lg bg-gradient-to-br from-green-50 to-teal-50 border border-green-100 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group relative overflow-hidden">
+				class="flex flex-col items-start p-6 rounded-xl shadow-lg bg-gradient-to-br from-green-50 to-teal-50 border border-green-100 hover:shadow-xl transition-all duration-300 transform group relative overflow-hidden">
 				<div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-green-400 to-teal-500"></div>
 				<div class="flex items-center space-x-2 mb-3">
 					<div
@@ -179,7 +179,6 @@ export default {
 	background-color: rgba(255, 255, 255, 0.7);
 	border-radius: 0.5rem;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-	transform: translateX(5px);
 }
 
 /* Animated icons */

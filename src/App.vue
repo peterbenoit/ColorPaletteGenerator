@@ -5,8 +5,10 @@
 			<div class="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
 				<div class="mb-4 md:mb-0">
 					<p class="text-gray-600">
-						© {{ new Date().getFullYear() }} Color Palette Generator | Built with ❤️ for designers &
-						developers
+						© {{ new Date().getFullYear() }} Color Palette Generator | Built with ❤️ by <a
+							href="https://www.uiguy.dev" target="_blank"
+							class="text-gray-400 hover:text-blue-600 transition-colors">Peter
+							Benoit</a>
 					</p>
 				</div>
 				<div class="flex space-x-4">
