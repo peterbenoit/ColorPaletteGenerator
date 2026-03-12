@@ -231,7 +231,20 @@ export default {
 			]
 		};
 	},
+	mounted() {
+		const randomSuggestion = this.suggestions[Math.floor(Math.random() * this.suggestions.length)];
+		this.query = randomSuggestion;
+		this.fetchImage();
+	},
 	methods: {
+		applyPaletteTheme() {
+			if (this.colors.length >= 2) {
+				const bg1 = this.colors[0].replace('rgb', 'rgba').replace(')', ', 0.08)');
+				const bg2 = this.colors[1] ? this.colors[1].replace('rgb', 'rgba').replace(')', ', 0.08)') : bg1;
+				document.body.style.backgroundImage = `linear-gradient(135deg, ${bg1}, ${bg2})`;
+				document.body.style.backgroundColor = '#ffffff';
+			}
+		},
 		async fetchImage() {
 			if (!this.query || this.query.trim() === "") {
 				this.showNotification("Please enter a search term", "fas fa-exclamation-circle");
@@ -327,6 +340,7 @@ export default {
 					}
 
 					this.generateCSS();
+					this.applyPaletteTheme();
 					Prism.highlightAll();
 				}
 				catch (error) {
@@ -363,8 +377,7 @@ export default {
 				document.body.style.backgroundColor = color;
 				document.body.style.backgroundImage = "none";
 			} else {
-				document.body.style.backgroundColor = "";
-				document.body.style.backgroundImage = "";
+				this.applyPaletteTheme();
 			}
 		},
 
