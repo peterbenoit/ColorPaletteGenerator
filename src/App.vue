@@ -6,7 +6,7 @@
 				<div class="mb-4 md:mb-0">
 					<p class="text-gray-600">
 						© {{ new Date().getFullYear() }} Color Palette Generator | Built with ❤️ by <a
-							href="https://www.uiguy.dev" target="_blank"
+							href="https://www.peterbenoit.com" target="_blank"
 							class="text-gray-400 hover:text-blue-600 transition-colors">Peter
 							Benoit</a>
 					</p>
