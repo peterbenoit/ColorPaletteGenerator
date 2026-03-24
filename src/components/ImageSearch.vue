@@ -2,6 +2,9 @@
 	<div class="container mx-auto mt-10 max-w-[1200px]">
 		<Header />
 
+		<!-- QOL-2: declarative hidden file input driven by uploadImage() -->
+		<input ref="fileInputRef" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
+
 		<!-- Main Content Section -->
 		<div class="border bg-white/80 border-gray-100 rounded-xl shadow-xl p-6 m-4 md:p-8 md:m-8 backdrop-blur-sm">
 			<!-- Search Input Section -->
@@ -33,7 +36,7 @@
 					</div>
 
 					<div class="flex flex-wrap gap-2 justify-center">
-						<button v-for="suggestion in suggestions" @click="searchSuggestion(suggestion)"
+						<button v-for="suggestion in suggestions" :key="suggestion" @click="searchSuggestion(suggestion)"
 							class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">
 							{{ suggestion }}
 						</button>
@@ -81,7 +84,7 @@
 							</h3>
 							<div
 								class="relative p-4 bg-gray-900 shadow-inner rounded-md overflow-auto max-h-[200px] text-sm">
-								<pre><code class="language-css">{{ cssContent }}</code></pre>
+								<pre><code ref="cssCodeRef" class="language-css">{{ cssContent }}</code></pre>
 								<button @click="copyCSSToClipboard"
 									class="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-md transition-colors shadow-sm">
 									<i class="far fa-copy mr-1"></i> Copy CSS
@@ -112,20 +115,10 @@
 
 						<div class="flex justify-between items-center mt-4">
 							<div class="flex gap-2">
-								<button @click="changePaletteSize(5)"
+								<button v-for="size in [5, 7, 9]" :key="size" @click="changePaletteSize(size)"
 									class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
-									:class="{ 'bg-gray-200': paletteSize === 5 }">
-									5
-								</button>
-								<button @click="changePaletteSize(7)"
-									class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
-									:class="{ 'bg-gray-200': paletteSize === 7 }">
-									7
-								</button>
-								<button @click="changePaletteSize(9)"
-									class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
-									:class="{ 'bg-gray-200': paletteSize === 9 }">
-									9
+									:class="{ 'bg-gray-200': paletteSize === size }">
+									{{ size }}
 								</button>
 							</div>
 
@@ -195,430 +188,274 @@
 	</div>
 </template>
 
-<script>
-import axios from 'axios';
-import ColorThief from 'colorthief';
-import Prism from 'prismjs';
-import annyang from 'annyang';
-import Header from './Header.vue';
-import Usage from './Usage.vue';
+<script setup>
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import axios from 'axios'
+import ColorThief from 'colorthief'
+import Prism from 'prismjs'
+import Header from './Header.vue'
+import Usage from './Usage.vue'
+import { useNotification } from '../composables/useNotification.js'
+import { usePaletteHistory } from '../composables/usePaletteHistory.js'
+import { useColorConversion } from '../composables/useColorConversion.js'
+import { useVoiceSearch } from '../composables/useVoiceSearch.js'
 
-export default {
-	data() {
-		return {
-			query: "",
-			imageUrl: "",
-			colors: [],
-			paletteHistory: [],
-			cssContent: "",
-			listening: false,
-			isUnsplashImage: false,
-			photographerName: "",
-			photographerProfile: "",
-			activeColor: null,
-			formatType: "RGB",
-			paletteSize: 7,
-			paletteLocked: false,
-			notification: {
-				show: false,
-				message: "",
-				icon: "",
-				timeout: null
-			},
-			suggestions: [
-				"nature", "ocean", "mountains", "city", "sunset",
-				"architecture", "food", "flowers", "animals"
-			]
-		};
+// State
+const query = ref('')
+const imageUrl = ref('')
+const colors = ref([])
+const cssContent = ref('')
+const isUnsplashImage = ref(false)
+const photographerName = ref('')
+const photographerProfile = ref('')
+const activeColor = ref(null)
+const formatType = ref('RGB')
+const paletteSize = ref(7)
+const paletteLocked = ref(false)
+const paletteContainer = ref(null)
+const cssCodeRef = ref(null)
+const fileInputRef = ref(null)
+
+const suggestions = ['nature', 'ocean', 'mountains', 'city', 'sunset', 'architecture', 'food', 'flowers', 'animals']
+
+// Composables
+const { notification, showNotification, cleanupNotification } = useNotification()
+const { paletteHistory, addToHistory } = usePaletteHistory()
+const { rgbToHex, hexToRgb, rgbToHsl } = useColorConversion()
+const { listening, toggleVoiceSearch, cleanupVoice } = useVoiceSearch(
+	(recognizedQuery) => {
+		query.value = recognizedQuery
+		fetchImage()
 	},
-	mounted() {
-		const randomSuggestion = this.suggestions[Math.floor(Math.random() * this.suggestions.length)];
-		this.query = randomSuggestion;
-		this.fetchImage();
-	},
-	methods: {
-		applyPaletteTheme() {
-			if (this.colors.length >= 2) {
-				const bg1 = this.colors[0].replace('rgb', 'rgba').replace(')', ', 0.08)');
-				const bg2 = this.colors[1] ? this.colors[1].replace('rgb', 'rgba').replace(')', ', 0.08)') : bg1;
-				document.body.style.backgroundImage = `linear-gradient(135deg, ${bg1}, ${bg2})`;
-				document.body.style.backgroundColor = '#ffffff';
-			}
-		},
-		async fetchImage() {
-			if (!this.query || this.query.trim() === "") {
-				this.showNotification("Please enter a search term", "fas fa-exclamation-circle");
-				return;
-			}
+	showNotification
+)
 
-			try {
-				this.showNotification("Searching for images...", "fas fa-spinner fa-spin");
+// Background theming via CSS custom properties (QOL-3)
+function applyPaletteTheme() {
+	if (colors.value.length >= 2) {
+		const toRgba = (rgb, a) => rgb.replace('rgb(', 'rgba(').replace(')', `, ${a})`)
+		const bg1 = toRgba(colors.value[0], 0.08)
+		const bg2 = toRgba(colors.value[1], 0.08)
+		document.documentElement.style.setProperty('--palette-bg', `linear-gradient(135deg, ${bg1}, ${bg2})`)
+		document.documentElement.style.removeProperty('--palette-solid')
+	}
+}
 
-				const response = await axios.get(
-					`https://api.unsplash.com/photos/random?query=${this.query}&orientation=landscape&client_id=${import.meta.env.VITE_API_KEY}`
-				);
+function applyColor(color) {
+	activeColor.value = activeColor.value === color ? null : color
+	if (activeColor.value) {
+		document.documentElement.style.setProperty('--palette-solid', color)
+		document.documentElement.style.setProperty('--palette-bg', 'none')
+	} else {
+		document.documentElement.style.removeProperty('--palette-solid')
+		applyPaletteTheme()
+	}
+}
 
-				this.imageUrl = response.data.urls.regular;
-				this.photographerName = response.data.user.name;
-				this.photographerProfile = response.data.user.links.html;
-				this.isUnsplashImage = true;
+// CSS generation
+function generateCSS() {
+	let cssVariables
+	if (formatType.value === 'RGB') {
+		cssVariables = colors.value.map((c, i) => `--color-${i + 1}: ${c};`).join('\n  ')
+	} else if (formatType.value === 'HEX') {
+		cssVariables = colors.value.map((c, i) => `--color-${i + 1}: ${rgbToHex(c)};`).join('\n  ')
+	} else {
+		cssVariables = colors.value.map((c, i) => `--color-${i + 1}: ${rgbToHsl(c)};`).join('\n  ')
+	}
+	cssContent.value = `:root {\n  ${cssVariables}\n}`
+}
 
-				// Trigger the download event
-				await axios.get(`https://api.unsplash.com/photos/${response.data.id}/download?client_id=${import.meta.env.VITE_API_KEY}`);
+// QOL-4: Target the specific code element instead of highlightAll
+async function highlightCSS() {
+	await nextTick()
+	if (cssCodeRef.value) Prism.highlightElement(cssCodeRef.value)
+}
 
-				this.extractColors();
-				this.showNotification("Image loaded successfully!", "fas fa-check-circle");
-			}
-			catch (error) {
-				console.error("Error fetching image:", error);
-				this.showNotification("Error loading image", "fas fa-times-circle");
-			}
-		},
-
-		async refreshImage() {
-			if (this.query) {
-				await this.fetchImage();
-			}
-		},
-
-		async uploadImage() {
-			const input = document.createElement("input");
-			input.type = "file";
-			input.accept = "image/*";
-			input.onchange = async (event) => {
-				const file = event.target.files[0];
-				if (file) {
-					try {
-						this.showNotification("Loading your image...", "fas fa-spinner fa-spin");
-
-						const reader = new FileReader();
-						reader.onload = async (event) => {
-							this.imageUrl = event.target.result;
-							this.isUnsplashImage = false;
-							this.extractColors();
-							this.showNotification("Image loaded successfully!", "fas fa-check-circle");
-						};
-						reader.readAsDataURL(file);
-					} catch (error) {
-						console.error("Error processing uploaded image:", error);
-						this.showNotification("Error processing image", "fas fa-times-circle");
-					}
-				}
-			};
-			input.click();
-		},
-
-		searchSuggestion(suggestion) {
-			this.query = suggestion;
-			this.fetchImage();
-		},
-
-		extractColors() {
-			if (this.paletteLocked) return;
-
-			const img = new Image();
-			img.crossOrigin = "Anonymous";
-			img.src = this.imageUrl;
-			img.onload = () => {
-				const colorThief = new ColorThief();
-				try {
-					this.colors = colorThief.getPalette(img, this.paletteSize).map((color) =>
-						`rgb(${color[0]}, ${color[1]}, ${color[2]})`
-					);
-
-					// Save to palette history
-					if (this.colors.length > 0) {
-						this.paletteHistory.unshift({
-							colors: [...this.colors],
-							timestamp: new Date().getTime()
-						});
-
-						// Keep only the last 10 palettes
-						if (this.paletteHistory.length > 10) {
-							this.paletteHistory = this.paletteHistory.slice(0, 10);
-						}
-					}
-
-					this.generateCSS();
-					this.applyPaletteTheme();
-					Prism.highlightAll();
-				}
-				catch (error) {
-					console.error("Error extracting colors:", error);
-					this.showNotification("Error extracting colors", "fas fa-palette fa-times-circle");
-				}
-			};
-		},
-
-		generateCSS() {
-			let cssVariables;
-
-			if (this.formatType === "RGB") {
-				cssVariables = this.colors.map((color, index) =>
-					`--color-${index + 1}: ${color};`
-				).join("\n  ");
-			} else if (this.formatType === "HEX") {
-				cssVariables = this.colors.map((color, index) =>
-					`--color-${index + 1}: ${this.rgbToHex(color)};`
-				).join("\n  ");
-			} else if (this.formatType === "HSL") {
-				cssVariables = this.colors.map((color, index) =>
-					`--color-${index + 1}: ${this.rgbToHsl(color)};`
-				).join("\n  ");
-			}
-
-			this.cssContent = `:root {\n  ${cssVariables}\n}`;
-		},
-
-		applyColor(color) {
-			this.activeColor = this.activeColor === color ? null : color;
-
-			if (this.activeColor) {
-				document.body.style.backgroundColor = color;
-				document.body.style.backgroundImage = "none";
-			} else {
-				this.applyPaletteTheme();
-			}
-		},
-
-		changePaletteSize(size) {
-			if (this.paletteSize !== size) {
-				this.paletteSize = size;
-				if (this.imageUrl) {
-					this.extractColors();
-				}
-			}
-		},
-
-		toggleFormatType() {
-			const formats = ["RGB", "HEX", "HSL"];
-			const currentIndex = formats.indexOf(this.formatType);
-			const nextIndex = (currentIndex + 1) % formats.length;
-			this.formatType = formats[nextIndex];
-			this.generateCSS();
-			Prism.highlightAll();
-		},
-
-		toggleLockPalette() {
-			this.paletteLocked = !this.paletteLocked;
-			this.showNotification(
-				this.paletteLocked ? "Palette locked" : "Palette unlocked",
-				this.paletteLocked ? "fas fa-lock" : "fas fa-lock-open"
-			);
-		},
-
-		loadHistoryPalette(palette) {
-			if (palette && palette.colors) {
-				this.colors = [...palette.colors];
-				this.generateCSS();
-				Prism.highlightAll();
-				this.showNotification("Historical palette loaded", "fas fa-history");
-			}
-		},
-
-		async exportToPNG() {
-			const paletteContainer = this.$refs.paletteContainer;
-			if (!paletteContainer) {
-				console.error("Palette container is not found");
-				return;
-			}
-
-			try {
-				this.showNotification("Generating PNG...", "fas fa-spinner fa-spin");
-
-				const canvas = document.createElement("canvas");
-				const context = canvas.getContext("2d");
-				const size = 100; // Size of each color square
-				const padding = 20; // Padding around the colors
-				const titleHeight = 60; // Height for the title section
-
-				canvas.width = size * this.colors.length + padding * 2;
-				canvas.height = size + padding * 2 + titleHeight;
-
-				// Fill the background
-				context.fillStyle = "#FFFFFF";
-				context.fillRect(0, 0, canvas.width, canvas.height);
-
-				// Add a title
-				context.fillStyle = "#333333";
-				context.font = "bold 24px Inter, Arial, sans-serif";
-				context.textAlign = "center";
-				context.textBaseline = "middle";
-				context.fillText("Color Palette", canvas.width / 2, titleHeight / 2);
-
-				// Draw each color square
-				this.colors.forEach((color, index) => {
-					const x = index * size + padding;
-					const y = padding + titleHeight;
-
-					// Draw the color square
-					context.fillStyle = color;
-					context.fillRect(x, y, size, size);
-
-					// Draw the color value
-					const hexValue = this.rgbToHex(color);
-
-					// Determine text color based on background brightness
-					const rgb = this.hexToRgb(hexValue);
-					const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-					context.fillStyle = brightness > 125 ? "#000000" : "#FFFFFF";
-
-					context.font = "14px Inter, Arial, sans-serif";
-					context.textAlign = "center";
-					context.textBaseline = "middle";
-					context.fillText(hexValue, x + size / 2, y + size / 2);
-				});
-
-				const link = document.createElement("a");
-				link.href = canvas.toDataURL("image/png");
-				link.download = `color-palette-${new Date().getTime()}.png`;
-				link.click();
-
-				this.showNotification("PNG saved successfully!", "fas fa-check-circle");
-			}
-			catch (error) {
-				console.error("Error exporting to PNG:", error);
-				this.showNotification("Error saving PNG", "fas fa-times-circle");
-			}
-		},
-
-		rgbToHex(rgb) {
-			const result = rgb.match(/\d+/g).map((num) => {
-				const hex = parseInt(num).toString(16);
-				return hex.length === 1 ? "0" + hex : hex;
-			});
-			return `#${result.join("")}`;
-		},
-
-		hexToRgb(hex) {
-			const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-			return result ? {
-				r: parseInt(result[1], 16),
-				g: parseInt(result[2], 16),
-				b: parseInt(result[3], 16)
-			} : null;
-		},
-
-		rgbToHsl(rgb) {
-			// Parse the RGB values
-			const values = rgb.match(/\d+/g).map(Number);
-			let r = values[0] / 255;
-			let g = values[1] / 255;
-			let b = values[2] / 255;
-
-			const max = Math.max(r, g, b);
-			const min = Math.min(r, g, b);
-			let h, s, l = (max + min) / 2;
-
-			if (max === min) {
-				h = s = 0; // achromatic
-			} else {
-				const d = max - min;
-				s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-
-				switch (max) {
-					case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-					case g: h = (b - r) / d + 2; break;
-					case b: h = (r - g) / d + 4; break;
-				}
-
-				h /= 6;
-			}
-
-			h = Math.round(h * 360);
-			s = Math.round(s * 100);
-			l = Math.round(l * 100);
-
-			return `hsl(${h}, ${s}%, ${l}%)`;
-		},
-
-		startVoiceSearch() {
-			if (annyang) {
-				const commands = {
-					"*query": (query) => {
-						console.log("Voice recognized:", query);
-						this.query = query;
-						this.fetchImage();
-					},
-				};
-
-				annyang.addCommands(commands);
-				annyang.start({ autoRestart: true, continuous: false });
-
-				annyang.addCallback('start', () => {
-					this.showNotification("Listening...", "fas fa-microphone");
-				});
-
-				annyang.addCallback('end', () => {
-					this.listening = false;
-				});
-
-				annyang.addCallback('error', (err) => {
-					console.error("Voice recognition error:", err);
-					this.showNotification("Voice recognition error", "fas fa-exclamation-circle");
-					this.listening = false;
-				});
-
-				annyang.addCallback('result', (phrases) => {
-					if (phrases && phrases.length > 0) {
-						this.showNotification(`Recognized: "${phrases[0]}"`, "fas fa-check-circle");
-					}
-				});
-			}
-		},
-
-		toggleVoiceSearch() {
-			if (annyang) {
-				if (this.listening) {
-					annyang.abort();
-					this.listening = false;
-					this.showNotification("Voice search stopped", "fas fa-microphone-slash");
-				} else {
-					this.startVoiceSearch();
-					this.listening = true;
-				}
-			} else {
-				this.showNotification("Voice recognition not supported in this browser", "fas fa-exclamation-circle");
-				console.error("Annyang is not supported in this browser");
-			}
-		},
-
-		copyCSSToClipboard() {
-			navigator.clipboard.writeText(this.cssContent).then(() => {
-				this.showNotification("CSS copied to clipboard!", "fas fa-clipboard-check");
-			}).catch((error) => {
-				console.error("Error copying CSS to clipboard:", error);
-				this.showNotification("Failed to copy CSS", "fas fa-times-circle");
-			});
-		},
-
-		showNotification(message, icon) {
-			// Clear any existing timeout
-			if (this.notification.timeout) {
-				clearTimeout(this.notification.timeout);
-			}
-
-			// Show the new notification
-			this.notification.show = true;
-			this.notification.message = message;
-			this.notification.icon = icon;
-
-			// Set a timeout to hide the notification
-			this.notification.timeout = setTimeout(() => {
-				this.notification.show = false;
-			}, 3000);
+// Color extraction
+function extractColors() {
+	if (paletteLocked.value) return
+	const img = new Image()
+	img.crossOrigin = 'Anonymous'
+	img.src = imageUrl.value
+	img.onload = () => {
+		const colorThief = new ColorThief()
+		try {
+			colors.value = colorThief.getPalette(img, paletteSize.value).map(
+				(c) => `rgb(${c[0]}, ${c[1]}, ${c[2]})`
+			)
+			if (colors.value.length > 0) addToHistory(colors.value)
+			generateCSS()
+			applyPaletteTheme()
+			highlightCSS()
+		} catch (error) {
+			console.error('Error extracting colors:', error)
+			showNotification('Error extracting colors', 'fas fa-exclamation-circle')
 		}
-	},
-	components: {
-		Header,
-		Usage
-	},
-};
+	}
+	// BUG-4: handle image load failure
+	img.onerror = () => showNotification('Error loading image for color extraction', 'fas fa-times-circle')
+}
+
+// Image fetching
+async function fetchImage() {
+	if (!query.value.trim()) {
+		showNotification('Please enter a search term', 'fas fa-exclamation-circle')
+		return
+	}
+	try {
+		showNotification('Searching for images...', 'fas fa-spinner fa-spin')
+		// SEC-1: encode query to prevent URL injection
+		const response = await axios.get(
+			`https://api.unsplash.com/photos/random?query=${encodeURIComponent(query.value)}&orientation=landscape&client_id=${import.meta.env.VITE_API_KEY}`
+		)
+		imageUrl.value = response.data.urls.regular
+		photographerName.value = response.data.user.name
+		photographerProfile.value = response.data.user.links.html
+		isUnsplashImage.value = true
+		// Trigger Unsplash download event (required by API guidelines)
+		await axios.get(`https://api.unsplash.com/photos/${response.data.id}/download?client_id=${import.meta.env.VITE_API_KEY}`)
+		extractColors()
+		showNotification('Image loaded successfully!', 'fas fa-check-circle')
+	} catch (error) {
+		console.error('Error fetching image:', error)
+		showNotification('Error loading image', 'fas fa-times-circle')
+	}
+}
+
+async function refreshImage() {
+	if (query.value) await fetchImage()
+}
+
+function searchSuggestion(suggestion) {
+	query.value = suggestion
+	fetchImage()
+}
+
+// QOL-2: Declarative file input — uploadImage triggers the hidden <input ref="fileInputRef">
+function uploadImage() {
+	fileInputRef.value?.click()
+}
+
+function handleFileChange(event) {
+	const file = event.target.files[0]
+	if (!file) return
+	showNotification('Loading your image...', 'fas fa-spinner fa-spin')
+	const reader = new FileReader()
+	reader.onload = (e) => {
+		imageUrl.value = e.target.result
+		isUnsplashImage.value = false
+		extractColors()
+		showNotification('Image loaded successfully!', 'fas fa-check-circle')
+	}
+	reader.onerror = () => showNotification('Error processing image', 'fas fa-times-circle')
+	reader.readAsDataURL(file)
+	event.target.value = '' // reset so the same file can be re-selected
+}
+
+// Palette controls
+function changePaletteSize(size) {
+	if (paletteSize.value !== size) {
+		paletteSize.value = size
+		if (imageUrl.value) extractColors()
+	}
+}
+
+function toggleFormatType() {
+	const formats = ['RGB', 'HEX', 'HSL']
+	formatType.value = formats[(formats.indexOf(formatType.value) + 1) % formats.length]
+	generateCSS()
+	highlightCSS()
+}
+
+function toggleLockPalette() {
+	paletteLocked.value = !paletteLocked.value
+	showNotification(
+		paletteLocked.value ? 'Palette locked' : 'Palette unlocked',
+		paletteLocked.value ? 'fas fa-lock' : 'fas fa-lock-open'
+	)
+}
+
+function loadHistoryPalette(palette) {
+	if (palette?.colors) {
+		colors.value = [...palette.colors]
+		generateCSS()
+		highlightCSS()
+		showNotification('Historical palette loaded', 'fas fa-history')
+	}
+}
+
+// Export to PNG
+async function exportToPNG() {
+	if (!paletteContainer.value) return
+	try {
+		showNotification('Generating PNG...', 'fas fa-spinner fa-spin')
+		const canvas = document.createElement('canvas')
+		const context = canvas.getContext('2d')
+		const size = 100
+		const padding = 20
+		const titleHeight = 60
+		canvas.width = size * colors.value.length + padding * 2
+		canvas.height = size + padding * 2 + titleHeight
+
+		context.fillStyle = '#FFFFFF'
+		context.fillRect(0, 0, canvas.width, canvas.height)
+		context.fillStyle = '#333333'
+		context.font = 'bold 24px Inter, Arial, sans-serif'
+		context.textAlign = 'center'
+		context.textBaseline = 'middle'
+		context.fillText('Color Palette', canvas.width / 2, titleHeight / 2)
+
+		colors.value.forEach((color, index) => {
+			const x = index * size + padding
+			const y = padding + titleHeight
+			context.fillStyle = color
+			context.fillRect(x, y, size, size)
+			const hexValue = rgbToHex(color)
+			// BUG-3: guard against null return from hexToRgb
+			const rgb = hexToRgb(hexValue)
+			const brightness = rgb ? (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000 : 0
+			context.fillStyle = brightness > 125 ? '#000000' : '#FFFFFF'
+			context.font = '14px Inter, Arial, sans-serif'
+			context.textAlign = 'center'
+			context.textBaseline = 'middle'
+			context.fillText(hexValue, x + size / 2, y + size / 2)
+		})
+
+		const link = document.createElement('a')
+		link.href = canvas.toDataURL('image/png')
+		link.download = `color-palette-${Date.now()}.png`
+		link.click()
+		showNotification('PNG saved successfully!', 'fas fa-check-circle')
+	} catch (error) {
+		console.error('Error exporting to PNG:', error)
+		showNotification('Error saving PNG', 'fas fa-times-circle')
+	}
+}
+
+// Clipboard
+function copyCSSToClipboard() {
+	navigator.clipboard.writeText(cssContent.value)
+		.then(() => showNotification('CSS copied to clipboard!', 'fas fa-clipboard-check'))
+		.catch(() => showNotification('Failed to copy CSS', 'fas fa-times-circle'))
+}
+
+// Lifecycle
+onMounted(() => {
+	query.value = suggestions[Math.floor(Math.random() * suggestions.length)]
+	fetchImage()
+})
+
+// BUG-5: clean up timers and voice listeners on unmount
+onBeforeUnmount(() => {
+	cleanupNotification()
+	cleanupVoice()
+	document.documentElement.style.removeProperty('--palette-bg')
+	document.documentElement.style.removeProperty('--palette-solid')
+})
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
 div {
 	font-family: 'Inter', system-ui, sans-serif;

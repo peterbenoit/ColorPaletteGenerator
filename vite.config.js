@@ -51,7 +51,7 @@ export default defineConfig({
 			output: {
 				manualChunks: {
 					'vendor': ['vue'],
-					'image-processing': ['colorthief', 'html2canvas'],
+					'image-processing': ['colorthief'],
 					'voice': ['annyang']
 				}
 			}

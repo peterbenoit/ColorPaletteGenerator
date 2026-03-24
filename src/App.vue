@@ -67,20 +67,11 @@
 	</div>
 </template>
 
-<script>
-import ImageSearch from './components/ImageSearch.vue';
+<script setup>
+import { ref } from 'vue'
+import ImageSearch from './components/ImageSearch.vue'
 
-export default {
-	name: 'App',
-	components: {
-		ImageSearch,
-	},
-	data() {
-		return {
-			showCredits: false
-		}
-	}
-};
+const showCredits = ref(false)
 </script>
 
 <style>

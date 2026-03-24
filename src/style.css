@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* QOL-3: palette theming via CSS custom properties set by Vue */
+body {
+	background-color: var(--palette-solid, #ffffff);
+	background-image: var(--palette-bg, none);
+	transition: background-color 0.5s ease, background-image 0.5s ease;
+}
