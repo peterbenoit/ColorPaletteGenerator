@@ -1,198 +1,226 @@
 <template>
-	<div class="container mx-auto mt-10 max-w-[1200px]">
+	<div>
 		<Header />
 
 		<!-- QOL-2: declarative hidden file input driven by uploadImage() -->
 		<input ref="fileInputRef" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
 
-		<!-- Main Content Section -->
-		<div class="border bg-white/80 border-gray-100 rounded-xl shadow-xl p-6 m-4 md:p-8 md:m-8 backdrop-blur-sm">
-			<!-- Search Input Section -->
-			<div class="max-w-3xl mx-auto mb-8">
-				<div class="flex flex-col gap-4">
-					<div class="relative flex items-center">
-						<input v-model="query" type="text"
-							placeholder="Search for an image (e.g., mountains, ocean, forest...)"
-							class="border border-gray-200 p-3 pl-10 rounded-xl shadow-sm w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-							@keydown.enter="fetchImage" />
-						<i class="fas fa-search absolute left-3 text-gray-400"></i>
+		<main class="max-w-screen-2xl mx-auto px-8 pt-16 pb-24">
 
-						<div class="flex gap-2 ml-2">
+			<!-- Hero Section: Editorial Intro -->
+			<section class="mb-24">
+				<div class="flex flex-col md:flex-row gap-16 items-end">
+					<div class="md:w-2/3">
+						<span
+							class="font-label text-xs uppercase tracking-[0.3em] text-[#acabaa] mb-6 block">The Digital
+							Curator / Professional Tooling</span>
+						<h1
+							class="text-6xl md:text-8xl font-headline font-extrabold tracking-tighter leading-none mb-8">
+							Visual <br /><span class="text-[#b9b9b7]">Chromatics.</span>
+						</h1>
+						<p class="font-body text-xl text-[#acabaa] max-w-xl leading-relaxed">
+							Extract sophisticated palettes from imagery with clinical precision. Designed for
+							photographers, brand strategists, and digital architects.
+						</p>
+					</div>
+					<div class="md:w-1/3 flex flex-col gap-4">
+						<div class="bg-[#252626] p-1 flex items-center rounded-sm">
+							<span class="material-symbols-outlined px-3 text-[#acabaa]">search</span>
+							<input v-model="query" type="text" placeholder="Search Unsplash..."
+								class="bg-transparent border-none focus:ring-0 w-full font-label text-sm py-3 text-[#e7e5e4] placeholder:text-[#767575]"
+								@keydown.enter="fetchImage" />
+							<button v-if="listening" @click="toggleVoiceSearch"
+								class="px-3 text-[#acabaa] animate-pulse">
+								<span class="material-symbols-outlined">mic_off</span>
+							</button>
+							<button v-else @click="toggleVoiceSearch" class="px-3 text-[#acabaa]">
+								<span class="material-symbols-outlined">mic</span>
+							</button>
 							<button @click="fetchImage"
-								class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl transition-all flex items-center gap-2 shadow-md hover:shadow-lg">
-								<span class="hidden md:inline">Search</span>
-								<i class="fas fa-search md:hidden"></i>
-							</button>
-							<button @click="toggleVoiceSearch"
-								class="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white p-3 rounded-xl transition-all flex items-center justify-center w-12 shadow-md hover:shadow-lg"
-								:class="{ 'animate-pulse': listening }">
-								<i :class="listening ? 'fas fa-microphone-slash' : 'fas fa-microphone'"></i>
-							</button>
-							<button @click="uploadImage"
-								class="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white p-3 rounded-xl transition-all flex items-center justify-center w-12 shadow-md hover:shadow-lg">
-								<i class="fas fa-upload"></i>
+								class="editorial-gradient text-[#3f403f] px-4 py-2 m-1 rounded-sm text-sm font-bold tracking-tight hover:brightness-110 transition-all">
+								Search
 							</button>
 						</div>
-					</div>
-
-					<div class="flex flex-wrap gap-2 justify-center">
-						<button v-for="suggestion in suggestions" :key="suggestion" @click="searchSuggestion(suggestion)"
-							class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm transition-colors">
-							{{ suggestion }}
+						<button @click="uploadImage"
+							class="bg-[#1f2020] border border-[#484848]/20 py-4 rounded-sm flex items-center justify-center gap-3 hover:bg-[#2c2c2c] transition-colors">
+							<span class="material-symbols-outlined">upload_file</span>
+							<span class="font-label text-xs uppercase tracking-widest font-semibold">Upload Local
+								Image</span>
 						</button>
+						<!-- Suggestion chips -->
+						<div class="flex flex-wrap gap-2">
+							<button v-for="suggestion in suggestions" :key="suggestion"
+								@click="searchSuggestion(suggestion)"
+								class="px-3 py-1 bg-[#191a1a] hover:bg-[#252626] border border-[#484848]/30 rounded-sm text-xs text-[#acabaa] hover:text-[#e7e5e4] transition-colors font-label uppercase tracking-wider">
+								{{ suggestion }}
+							</button>
+						</div>
 					</div>
 				</div>
-			</div>
+			</section>
 
-			<!-- Image and Palette Section -->
-			<div v-if="imageUrl" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<!-- Image Card -->
-				<div class="card-height bg-white/40 rounded-xl shadow-lg p-4 transition-all hover:shadow-xl">
-					<div class="relative overflow-hidden rounded-lg">
-						<img :src="imageUrl" alt="Generated image for color palette"
-							class="w-full rounded-lg shadow-inner object-cover transform hover:scale-[1.02] transition-transform duration-300" />
-
-						<div class="absolute top-3 right-3">
-							<button @click="refreshImage"
-								class="bg-white/80 hover:bg-white p-2 rounded-full text-gray-700 shadow-md backdrop-blur-sm transition-all">
-								<i class="fas fa-sync-alt"></i>
-							</button>
-						</div>
+			<!-- Main Workspace: Image & Extraction -->
+			<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-32">
+				<!-- Image Canvas -->
+				<div class="lg:col-span-7 bg-[#131313] p-2 rounded-sm relative group overflow-hidden">
+					<div
+						class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
 					</div>
 
-					<p v-if="isUnsplashImage" class="mt-3 text-sm text-gray-600 flex items-center">
-						<i class="fas fa-camera mr-1"></i> Photo by
-						<a :href="`${photographerProfile}?utm_source=image_color_palette_generator&utm_medium=referral&utm_campaign=api-credit`"
-							target="_blank" class="text-blue-600 hover:underline mx-1">
-							{{ photographerName }}
-						</a>
-						on
-						<a href="https://unsplash.com?utm_source=image_color_palette_generator&utm_medium=referral&utm_campaign=api-credit"
-							target="_blank" class="text-blue-600 hover:underline ml-1">
-							Unsplash
-						</a>
+					<!-- Loaded image -->
+					<img v-if="imageUrl" :src="imageUrl" alt="Source image for color palette"
+						class="w-full h-[600px] object-cover rounded-sm transition-all duration-700"
+						crossorigin="anonymous" />
+
+					<!-- Placeholder skeleton -->
+					<div v-else class="w-full h-[600px] bg-[#252626] rounded-sm animate-pulse flex items-center justify-center">
+						<span class="material-symbols-outlined text-[#484848] text-6xl">image</span>
+					</div>
+
+					<div class="absolute top-8 right-8 flex gap-2">
+						<button @click="refreshImage"
+							class="glass-panel p-3 rounded-sm text-[#f9f9f9] hover:scale-105 transition-transform">
+							<span class="material-symbols-outlined">refresh</span>
+						</button>
+					</div>
+
+					<!-- Photographer credit -->
+					<p v-if="isUnsplashImage && photographerName"
+						class="mt-2 px-1 text-[10px] font-label uppercase tracking-widest text-[#767575] flex items-center gap-1">
+						<span class="material-symbols-outlined text-sm">photo_camera</span>
+						Photo by
+						<a :href="`${photographerProfile}?utm_source=curator_palette&utm_medium=referral`"
+							target="_blank" class="text-[#acabaa] hover:text-[#c7c6c5] ml-1">{{ photographerName }}</a>
+						<span class="mx-1">on</span>
+						<a href="https://unsplash.com?utm_source=curator_palette&utm_medium=referral"
+							target="_blank" class="text-[#acabaa] hover:text-[#c7c6c5]">Unsplash</a>
 					</p>
 				</div>
 
-				<!-- Palette and Options Card -->
-				<div
-					class="bg-white/40 rounded-xl shadow-lg p-4 flex flex-col justify-between transition-all hover:shadow-xl">
-					<div class="flex flex-col">
-						<div class="mb-4">
-							<h3 class="text-lg font-semibold mb-2 flex items-center">
-								<i class="fas fa-code mr-2 text-gray-500"></i> Generated CSS
-							</h3>
-							<div
-								class="relative p-4 bg-gray-900 shadow-inner rounded-md overflow-auto max-h-[200px] text-sm">
-								<pre><code ref="cssCodeRef" class="language-css">{{ cssContent }}</code></pre>
-								<button @click="copyCSSToClipboard"
-									class="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-md transition-colors shadow-sm">
-									<i class="far fa-copy mr-1"></i> Copy CSS
-								</button>
-							</div>
-						</div>
-
-						<div class="mb-4">
-							<h3 class="text-lg font-semibold mb-2 flex items-center">
-								<i class="fas fa-palette mr-2 text-gray-500"></i> Color Palette
-								<span v-if="activeColor" class="ml-2 text-sm font-normal text-gray-500">
-									{{ activeColor }}
-								</span>
-							</h3>
-							<div ref="paletteContainer" v-if="colors.length > 0"
-								class="mt-2 flex flex-wrap justify-center gap-2">
-								<div v-for="(color, index) in colors" :key="index" :style="{ backgroundColor: color }"
-									class="w-10 h-10 lg:w-10 lg:h-10 cursor-pointer rounded-full shadow-md transform hover:scale-110 transition-all border-2 border-white/50"
-									:class="{ 'ring-4 ring-blue-400': activeColor === color }"
-									@click="applyColor(color)">
-									<div
-										class="tooltip opacity-0 group-hover:opacity-100 bg-black text-white text-xs rounded py-1 px-2 absolute bottom-full left-1/2 -translate-x-1/2 mb-2">
-										{{ rgbToHex(color) }}
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="flex justify-between items-center mt-4">
+				<!-- Extraction Panel -->
+				<div class="lg:col-span-5 flex flex-col justify-between">
+					<div>
+						<div class="flex items-center justify-between mb-8">
+							<h2 class="text-3xl font-headline font-bold tracking-tight">Extracted Spectrum</h2>
 							<div class="flex gap-2">
 								<button v-for="size in [5, 7, 9]" :key="size" @click="changePaletteSize(size)"
-									class="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 transition-colors"
-									:class="{ 'bg-gray-200': paletteSize === size }">
+									class="px-3 py-1 rounded-sm text-xs font-label uppercase tracking-widest text-[#acabaa] hover:bg-[#252626] transition-colors border border-transparent"
+									:class="{ 'border-[#484848] text-[#e7e5e4] bg-[#1f2020]': paletteSize === size }">
 									{{ size }}
 								</button>
 							</div>
+						</div>
 
-							<div class="flex items-center gap-2">
+						<!-- Color items -->
+						<div class="space-y-4">
+							<div v-if="colors.length === 0" class="space-y-4">
+								<div v-for="i in 3" :key="i" class="flex items-center gap-6">
+									<div class="w-24 h-24 bg-[#252626] rounded-sm shrink-0 animate-pulse"></div>
+									<div class="flex flex-col gap-2 flex-1">
+										<div class="h-3 bg-[#252626] rounded animate-pulse w-20"></div>
+										<div class="h-6 bg-[#1f2020] rounded animate-pulse w-32"></div>
+										<div class="h-2 bg-[#252626] rounded animate-pulse w-24"></div>
+									</div>
+								</div>
+							</div>
+
+							<div v-for="(color, index) in colors" :key="index" class="flex items-center gap-6 group cursor-pointer"
+								@click="applyColor(color)">
+								<div :style="{ backgroundColor: color }"
+									class="w-24 h-24 rounded-sm shrink-0 shadow-2xl transition-transform group-hover:scale-105"
+									:class="{ 'ring-2 ring-[#c7c6c5]': activeColor === color }">
+								</div>
+								<div class="flex flex-col gap-1">
+									<span
+										class="font-label text-[10px] uppercase tracking-widest text-[#acabaa]">Color
+										{{ index + 1 }}</span>
+									<span class="text-2xl font-headline font-bold tracking-tighter">{{ rgbToHex(color)
+										}}</span>
+									<span class="font-label text-[10px] text-[#767575]">{{ color }}</span>
+								</div>
+								<button @click.stop="copyColor(color)"
+									class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+									<span class="material-symbols-outlined text-[#c7c6c5]">content_copy</span>
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- Code Generation -->
+					<div class="mt-12 bg-[#191a1a] p-6 rounded-sm border border-[#484848]/10">
+						<div class="flex justify-between items-center mb-4">
+							<div class="flex gap-2">
+								<button v-for="fmt in ['RGB', 'HEX', 'HSL']" :key="fmt"
+									@click="setFormat(fmt)"
+									class="font-label text-[10px] uppercase tracking-widest px-3 py-1 rounded-sm transition-colors"
+									:class="formatType === fmt ? 'bg-[#252626] text-[#e7e5e4]' : 'text-[#767575] hover:text-[#acabaa]'">
+									{{ fmt }}
+								</button>
+							</div>
+							<div class="flex gap-3 items-center">
 								<button @click="toggleLockPalette"
-									class="p-2 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
-									:class="{ 'text-yellow-500': paletteLocked }">
-									<i :class="paletteLocked ? 'fas fa-lock' : 'fas fa-lock-open'"></i>
+									class="text-[#acabaa] hover:text-[#f9f9f9] transition-colors"
+									:title="paletteLocked ? 'Unlock palette' : 'Lock palette'">
+									<span class="material-symbols-outlined" :class="{ 'text-[#c7c6c5]': paletteLocked }">
+										{{ paletteLocked ? 'lock' : 'lock_open' }}
+									</span>
 								</button>
-								<button @click="toggleFormatType"
-									class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 transition-colors flex items-center gap-1 text-sm">
-									<i class="fas fa-code mr-1"></i>
-									{{ formatType }}
-								</button>
-								<button @click="exportToPNG"
-									class="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center shadow-sm hover:shadow-md">
-									<i class="fas fa-download mr-2"></i> Save PNG
-								</button>
+								<button @click="copyCSSToClipboard"
+									class="text-[10px] font-bold uppercase tracking-widest text-[#c7c6c5] hover:underline">Copy
+									All</button>
 							</div>
 						</div>
+						<code class="block font-label text-[11px] leading-relaxed text-[#c1bfbe] whitespace-pre">{{ cssContent }}</code>
+					</div>
+
+					<!-- Export button -->
+					<button v-if="colors.length > 0" @click="exportToPNG"
+						class="mt-4 w-full py-3 border border-[#484848]/30 text-xs font-bold uppercase tracking-[0.2em] text-[#acabaa] hover:bg-[#e7e5e4] hover:text-[#0e0e0e] transition-colors rounded-sm">
+						<span class="material-symbols-outlined text-sm align-middle mr-2">download</span>
+						Export PNG
+					</button>
+				</div>
+			</section>
+
+			<!-- Archives: Recent Palettes -->
+			<section v-if="paletteHistory.length > 0" class="mb-32">
+				<div class="flex justify-between items-end mb-12">
+					<div>
+						<h3 class="text-4xl font-headline font-bold tracking-tighter">Archives</h3>
+						<p class="text-[#acabaa] mt-2 font-label text-sm">Your curated library of recent
+							extractions.</p>
 					</div>
 				</div>
-			</div>
-
-			<!-- Placeholder Sections (for loading state) -->
-			<div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-				<div class="aspect-video bg-gray-200 animate-pulse rounded-xl"></div>
-				<div class="flex flex-col gap-6">
-					<div class="h-[200px] bg-gray-200 shadow-inner rounded-xl animate-pulse"></div>
-					<div class="mt-2 flex justify-center gap-2">
-						<div v-for="i in 7" :key="i"
-							class="w-14 h-14 lg:w-16 lg:h-16 bg-gray-200 rounded-full animate-pulse"></div>
-					</div>
-					<div class="flex justify-end mt-5">
-						<div class="w-32 h-10 bg-gray-200 rounded-lg animate-pulse"></div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Color History Section -->
-			<div v-if="paletteHistory.length > 0" class="mt-8 bg-white/40 p-4 rounded-xl shadow-md">
-				<h3 class="text-lg font-semibold mb-3 flex items-center">
-					<i class="fas fa-history mr-2"></i> Recent Palettes
-				</h3>
-				<div class="flex flex-nowrap overflow-x-auto pb-4 gap-6">
+				<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
 					<div v-for="(palette, pIndex) in paletteHistory" :key="pIndex"
-						class="flex-shrink-0 p-2 bg-white/70 rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer"
+						class="bg-[#131313] p-3 rounded-sm flex flex-col gap-3 group cursor-pointer hover:bg-[#1f2020] transition-colors"
 						@click="loadHistoryPalette(palette)">
-						<div class="flex gap-1">
+						<div class="flex gap-1 h-10">
 							<div v-for="(color, cIndex) in palette.colors" :key="`${pIndex}-${cIndex}`"
-								:style="{ backgroundColor: color }" class="w-8 h-8 rounded-full border border-white/50">
-							</div>
+								:style="{ backgroundColor: color }" class="flex-1 rounded-sm"></div>
 						</div>
+						<span class="font-label text-[9px] uppercase tracking-widest text-[#767575]">{{ palette.colors.length }} colors</span>
 					</div>
 				</div>
-			</div>
-		</div>
+			</section>
 
-		<Usage />
+			<Usage />
+
+		</main>
 
 		<!-- Notification -->
 		<div v-if="notification.show"
-			class="fixed bottom-6 right-6 bg-gray-800 text-white py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-opacity animate-fade-in-up">
-			<i :class="notification.icon"></i>
+			class="fixed bottom-6 right-6 bg-[#252626] border border-[#484848]/30 text-[#e7e5e4] py-3 px-5 rounded-sm shadow-lg flex items-center gap-3 font-label text-xs uppercase tracking-widest">
+			<span class="material-symbols-outlined text-sm">{{ notification.icon }}</span>
 			{{ notification.message }}
 		</div>
 	</div>
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import ColorThief from 'colorthief'
-import Prism from 'prismjs'
 import Header from './Header.vue'
 import Usage from './Usage.vue'
 import { useNotification } from '../composables/useNotification.js'
@@ -212,8 +240,6 @@ const activeColor = ref(null)
 const formatType = ref('RGB')
 const paletteSize = ref(7)
 const paletteLocked = ref(false)
-const paletteContainer = ref(null)
-const cssCodeRef = ref(null)
 const fileInputRef = ref(null)
 
 const suggestions = ['nature', 'ocean', 'mountains', 'city', 'sunset', 'architecture', 'food', 'flowers', 'animals']
@@ -265,11 +291,7 @@ function generateCSS() {
 	cssContent.value = `:root {\n  ${cssVariables}\n}`
 }
 
-// QOL-4: Target the specific code element instead of highlightAll
-async function highlightCSS() {
-	await nextTick()
-	if (cssCodeRef.value) Prism.highlightElement(cssCodeRef.value)
-}
+
 
 // Color extraction
 function extractColors() {
@@ -286,24 +308,23 @@ function extractColors() {
 			if (colors.value.length > 0) addToHistory(colors.value)
 			generateCSS()
 			applyPaletteTheme()
-			highlightCSS()
 		} catch (error) {
 			console.error('Error extracting colors:', error)
-			showNotification('Error extracting colors', 'fas fa-exclamation-circle')
+			showNotification('Error extracting colors', 'error')
 		}
 	}
 	// BUG-4: handle image load failure
-	img.onerror = () => showNotification('Error loading image for color extraction', 'fas fa-times-circle')
+	img.onerror = () => showNotification('Error loading image for color extraction', 'broken_image')
 }
 
 // Image fetching
 async function fetchImage() {
 	if (!query.value.trim()) {
-		showNotification('Please enter a search term', 'fas fa-exclamation-circle')
+		showNotification('Please enter a search term', 'warning')
 		return
 	}
 	try {
-		showNotification('Searching for images...', 'fas fa-spinner fa-spin')
+		showNotification('Searching for images...', 'hourglass_top')
 		// SEC-1: encode query to prevent URL injection
 		const response = await axios.get(
 			`https://api.unsplash.com/photos/random?query=${encodeURIComponent(query.value)}&orientation=landscape&client_id=${import.meta.env.VITE_API_KEY}`
@@ -315,10 +336,10 @@ async function fetchImage() {
 		// Trigger Unsplash download event (required by API guidelines)
 		await axios.get(`https://api.unsplash.com/photos/${response.data.id}/download?client_id=${import.meta.env.VITE_API_KEY}`)
 		extractColors()
-		showNotification('Image loaded successfully!', 'fas fa-check-circle')
+		showNotification('Image loaded successfully!', 'check_circle')
 	} catch (error) {
 		console.error('Error fetching image:', error)
-		showNotification('Error loading image', 'fas fa-times-circle')
+		showNotification('Error loading image', 'error')
 	}
 }
 
@@ -339,15 +360,15 @@ function uploadImage() {
 function handleFileChange(event) {
 	const file = event.target.files[0]
 	if (!file) return
-	showNotification('Loading your image...', 'fas fa-spinner fa-spin')
+	showNotification('Loading your image...', 'hourglass_top')
 	const reader = new FileReader()
 	reader.onload = (e) => {
 		imageUrl.value = e.target.result
 		isUnsplashImage.value = false
 		extractColors()
-		showNotification('Image loaded successfully!', 'fas fa-check-circle')
+		showNotification('Image loaded successfully!', 'check_circle')
 	}
-	reader.onerror = () => showNotification('Error processing image', 'fas fa-times-circle')
+	reader.onerror = () => showNotification('Error processing image', 'error')
 	reader.readAsDataURL(file)
 	event.target.value = '' // reset so the same file can be re-selected
 }
@@ -360,35 +381,38 @@ function changePaletteSize(size) {
 	}
 }
 
-function toggleFormatType() {
-	const formats = ['RGB', 'HEX', 'HSL']
-	formatType.value = formats[(formats.indexOf(formatType.value) + 1) % formats.length]
+function setFormat(fmt) {
+	formatType.value = fmt
 	generateCSS()
-	highlightCSS()
 }
 
 function toggleLockPalette() {
 	paletteLocked.value = !paletteLocked.value
 	showNotification(
 		paletteLocked.value ? 'Palette locked' : 'Palette unlocked',
-		paletteLocked.value ? 'fas fa-lock' : 'fas fa-lock-open'
+		paletteLocked.value ? 'lock' : 'lock_open'
 	)
+}
+
+function copyColor(color) {
+	navigator.clipboard.writeText(rgbToHex(color))
+		.then(() => showNotification('Color copied!', 'content_copy'))
+		.catch(() => showNotification('Failed to copy', 'error'))
 }
 
 function loadHistoryPalette(palette) {
 	if (palette?.colors) {
 		colors.value = [...palette.colors]
 		generateCSS()
-		highlightCSS()
-		showNotification('Historical palette loaded', 'fas fa-history')
+		showNotification('Historical palette loaded', 'history')
 	}
 }
 
 // Export to PNG
 async function exportToPNG() {
-	if (!paletteContainer.value) return
+	if (colors.value.length === 0) return
 	try {
-		showNotification('Generating PNG...', 'fas fa-spinner fa-spin')
+		showNotification('Generating PNG...', 'hourglass_top')
 		const canvas = document.createElement('canvas')
 		const context = canvas.getContext('2d')
 		const size = 100
@@ -425,18 +449,18 @@ async function exportToPNG() {
 		link.href = canvas.toDataURL('image/png')
 		link.download = `color-palette-${Date.now()}.png`
 		link.click()
-		showNotification('PNG saved successfully!', 'fas fa-check-circle')
+		showNotification('PNG saved successfully!', 'check_circle')
 	} catch (error) {
 		console.error('Error exporting to PNG:', error)
-		showNotification('Error saving PNG', 'fas fa-times-circle')
+		showNotification('Error saving PNG', 'error')
 	}
 }
 
 // Clipboard
 function copyCSSToClipboard() {
 	navigator.clipboard.writeText(cssContent.value)
-		.then(() => showNotification('CSS copied to clipboard!', 'fas fa-clipboard-check'))
-		.catch(() => showNotification('Failed to copy CSS', 'fas fa-times-circle'))
+		.then(() => showNotification('CSS copied to clipboard!', 'content_paste'))
+		.catch(() => showNotification('Failed to copy CSS', 'error'))
 }
 
 // Lifecycle
@@ -455,154 +479,8 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..800&display=swap');
-
-div {
-	font-family: 'Inter', system-ui, sans-serif;
-}
-
-/* Prism.js styling */
-code[class*=language-],
-pre[class*=language-] {
-	color: #ccc;
-	background: transparent;
-	font-family: 'JetBrains Mono', Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-	font-size: 0.9em;
-	text-align: left;
-	white-space: pre;
-	word-spacing: normal;
-	word-break: normal;
-	word-wrap: normal;
-	line-height: 1.5;
-	-moz-tab-size: 4;
-	-o-tab-size: 4;
-	tab-size: 4;
-	-webkit-hyphens: none;
-	-moz-hyphens: none;
-	-ms-hyphens: none;
-	hyphens: none;
-}
-
-pre[class*=language-] {
-	padding: 1em;
-	margin: .5em 0;
-	overflow: auto;
-	border-radius: 0.375rem;
-}
-
-:not(pre)>code[class*=language-],
-pre[class*=language-] {
-	background: #1f2937;
-}
-
-:not(pre)>code[class*=language-] {
-	padding: .1em;
-	border-radius: .3em;
-	white-space: normal;
-}
-
-.token.block-comment,
-.token.cdata,
-.token.comment,
-.token.doctype,
-.token.prolog {
-	color: #999;
-}
-
-.token.punctuation {
-	color: #ccc;
-}
-
-.token.attr-name,
-.token.deleted,
-.token.namespace,
-.token.tag {
-	color: #e2777a;
-}
-
-.token.function-name {
-	color: #6196cc;
-}
-
-.token.boolean,
-.token.function,
-.token.number {
-	color: #f08d49;
-}
-
-.token.class-name,
-.token.constant,
-.token.property,
-.token.symbol {
-	color: #f8c555;
-}
-
-.token.atrule,
-.token.builtin,
-.token.important,
-.token.keyword,
-.token.selector {
-	color: #cc99cd;
-}
-
-.token.attr-value,
-.token.char,
-.token.regex,
-.token.string,
-.token.variable {
-	color: #7ec699;
-}
-
-.token.entity,
-.token.operator,
-.token.url {
-	color: #67cdcc;
-}
-
-.token.bold,
-.token.important {
-	font-weight: 700;
-}
-
-.token.italic {
-	font-style: italic;
-}
-
-.token.entity {
-	cursor: help;
-}
-
-.token.inserted {
-	color: green;
-}
-
-.text-blue-600:hover {
-	text-decoration: underline;
-}
-
-.card-height {
-	min-height: 200px;
-}
-
-@media (min-width: 1024px) {
-	.card-height {
-		min-height: 400px;
-	}
-}
-
-.animate-pulse {
-	animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-
-	0%,
-	100% {
-		opacity: 1;
-	}
-
-	50% {
-		opacity: .5;
-	}
+.glass-panel {
+	background: rgba(44, 44, 44, 0.8);
+	backdrop-filter: blur(20px);
 }
 </style>
