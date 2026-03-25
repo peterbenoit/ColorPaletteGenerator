@@ -8,12 +8,19 @@
 					href="#">Generator</a>
 				<a href="https://github.com/peterbenoit/ColorPaletteGenerator" target="_blank"
 					class="font-headline tracking-tight font-medium text-sm text-[#acabaa] hover:text-[#f9f9f9] transition-colors duration-300">GitHub</a>
+				<a href="#" @click.prevent="openCredits"
+					class="font-headline tracking-tight font-medium text-sm text-[#acabaa] hover:text-[#f9f9f9] transition-colors duration-300">About</a>
 			</div>
 			<a href="https://unsplash.com" target="_blank"
-				class="editorial-gradient text-[#3f403f] px-6 py-2 rounded-sm text-sm font-bold tracking-tight hover:brightness-110 transition-all">
+				class="border border-[#484848]/60 text-[#acabaa] px-6 py-2 rounded-sm text-sm font-bold tracking-tight hover:border-[#767575] hover:text-[#f9f9f9] transition-all">
 				Powered by Unsplash
 			</a>
 		</nav>
 	</header>
 </template>
+
+<script setup>
+import { inject } from 'vue'
+const openCredits = inject('openCredits', () => {})
+</script>
 

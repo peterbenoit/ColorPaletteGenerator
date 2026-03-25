@@ -115,7 +115,7 @@
 						<div class="space-y-4">
 							<div v-if="colors.length === 0" class="space-y-4">
 								<div v-for="i in 3" :key="i" class="flex items-center gap-6">
-									<div class="w-24 h-24 bg-[#252626] rounded-sm shrink-0 animate-pulse"></div>
+									<div class="w-28 h-14 bg-[#252626] rounded-sm shrink-0 animate-pulse"></div>
 									<div class="flex flex-col gap-2 flex-1">
 										<div class="h-3 bg-[#252626] rounded animate-pulse w-20"></div>
 										<div class="h-6 bg-[#1f2020] rounded animate-pulse w-32"></div>
@@ -127,13 +127,12 @@
 							<div v-for="(color, index) in colors" :key="index" class="flex items-center gap-6 group cursor-pointer"
 								@click="applyColor(color)">
 								<div :style="{ backgroundColor: color }"
-									class="w-24 h-24 rounded-sm shrink-0 shadow-2xl transition-transform group-hover:scale-105"
+									class="w-28 h-14 rounded-sm shrink-0 shadow-2xl transition-transform group-hover:scale-105"
 									:class="{ 'ring-2 ring-[#c7c6c5]': activeColor === color }">
 								</div>
 								<div class="flex flex-col gap-1">
 									<span
-										class="font-label text-[10px] uppercase tracking-widest text-[#acabaa]">Color
-										{{ index + 1 }}</span>
+										class="font-label text-[10px] uppercase tracking-widest text-[#acabaa]">{{ getColorName(color) }}</span>
 									<span class="text-2xl font-headline font-bold tracking-tighter">{{ rgbToHex(color)
 										}}</span>
 									<span class="font-label text-[10px] text-[#767575]">{{ color }}</span>
@@ -247,7 +246,7 @@ const suggestions = ['nature', 'ocean', 'mountains', 'city', 'sunset', 'architec
 // Composables
 const { notification, showNotification, cleanupNotification } = useNotification()
 const { paletteHistory, addToHistory } = usePaletteHistory()
-const { rgbToHex, hexToRgb, rgbToHsl } = useColorConversion()
+	const { rgbToHex, hexToRgb, rgbToHsl, getColorName } = useColorConversion()
 const { listening, toggleVoiceSearch, cleanupVoice } = useVoiceSearch(
 	(recognizedQuery) => {
 		query.value = recognizedQuery
@@ -280,13 +279,15 @@ function applyColor(color) {
 
 // CSS generation
 function generateCSS() {
+	const semanticNames = ['primary', 'secondary', 'accent']
+	const varName = (i) => i < semanticNames.length ? semanticNames[i] : `color-${i + 1}`
 	let cssVariables
 	if (formatType.value === 'RGB') {
-		cssVariables = colors.value.map((c, i) => `--color-${i + 1}: ${c};`).join('\n  ')
+		cssVariables = colors.value.map((c, i) => `--${varName(i)}: ${c};`).join('\n  ')
 	} else if (formatType.value === 'HEX') {
-		cssVariables = colors.value.map((c, i) => `--color-${i + 1}: ${rgbToHex(c)};`).join('\n  ')
+		cssVariables = colors.value.map((c, i) => `--${varName(i)}: ${rgbToHex(c)};`).join('\n  ')
 	} else {
-		cssVariables = colors.value.map((c, i) => `--color-${i + 1}: ${rgbToHsl(c)};`).join('\n  ')
+		cssVariables = colors.value.map((c, i) => `--${varName(i)}: ${rgbToHsl(c)};`).join('\n  ')
 	}
 	cssContent.value = `:root {\n  ${cssVariables}\n}`
 }

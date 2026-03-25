@@ -61,10 +61,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, provide } from 'vue'
 import ImageSearch from './components/ImageSearch.vue'
 
 const showCredits = ref(false)
+provide('openCredits', () => { showCredits.value = true })
 </script>
 
 <style>
