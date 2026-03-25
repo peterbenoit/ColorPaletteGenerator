@@ -37,12 +37,12 @@
 								<span class="material-symbols-outlined">mic</span>
 							</button>
 							<button @click="fetchImage"
-								class="editorial-gradient text-[#3f403f] px-4 py-2 m-1 rounded-sm text-sm font-bold tracking-tight hover:brightness-110 transition-all">
+								class="bg-gray-50 text-[#3f403f] px-4 py-2 m-1 rounded-sm text-sm font-bold tracking-tight hover:brightness-110 transition-all">
 								Search
 							</button>
 						</div>
 						<button @click="uploadImage"
-							class="bg-[#1f2020] border border-[#484848]/20 py-4 rounded-sm flex items-center justify-center gap-3 hover:bg-[#2c2c2c] transition-colors">
+							class="bg-[#1f2020] text-[#e7e5e4] border border-[#484848]/20 py-4 rounded-sm flex items-center justify-center gap-3 hover:bg-[#2c2c2c] transition-colors">
 							<span class="material-symbols-outlined">upload_file</span>
 							<span class="font-label text-xs uppercase tracking-widest font-semibold">Upload Local
 								Image</span>
@@ -60,7 +60,7 @@
 			</section>
 
 			<!-- Main Workspace: Image & Extraction -->
-			<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-32">
+			<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12 items-start">
 				<!-- Image Canvas -->
 				<div class="lg:col-span-7 bg-[#131313] p-2 rounded-sm relative group overflow-hidden">
 					<div
@@ -97,8 +97,8 @@
 					</p>
 				</div>
 
-				<!-- Extraction Panel -->
-				<div class="lg:col-span-5 flex flex-col justify-between">
+			<!-- Extraction Panel -->
+			<div class="lg:col-span-5 flex flex-col justify-between self-start">
 					<div>
 						<div class="flex items-center justify-between mb-8">
 							<h2 class="text-3xl font-headline font-bold tracking-tight">Extracted Spectrum</h2>
@@ -112,7 +112,7 @@
 						</div>
 
 						<!-- Color items -->
-						<div class="space-y-4">
+					<div class="space-y-4 max-h-[250px] overflow-y-auto pr-1">
 							<div v-if="colors.length === 0" class="space-y-4">
 								<div v-for="i in 3" :key="i" class="flex items-center gap-6">
 									<div class="w-28 h-14 bg-[#252626] rounded-sm shrink-0 animate-pulse"></div>
@@ -185,7 +185,7 @@
 			<section v-if="paletteHistory.length > 0" class="mb-32">
 				<div class="flex justify-between items-end mb-12">
 					<div>
-						<h3 class="text-4xl font-headline font-bold tracking-tighter">Archives</h3>
+						<h3 class="text-[#e7e5e4] text-4xl font-headline font-bold tracking-tighter">Archives</h3>
 						<p class="text-[#acabaa] mt-2 font-label text-sm">Your curated library of recent
 							extractions.</p>
 					</div>
@@ -255,26 +255,8 @@ const { listening, toggleVoiceSearch, cleanupVoice } = useVoiceSearch(
 	showNotification
 )
 
-// Background theming via CSS custom properties (QOL-3)
-function applyPaletteTheme() {
-	if (colors.value.length >= 2) {
-		const toRgba = (rgb, a) => rgb.replace('rgb(', 'rgba(').replace(')', `, ${a})`)
-		const bg1 = toRgba(colors.value[0], 0.08)
-		const bg2 = toRgba(colors.value[1], 0.08)
-		document.documentElement.style.setProperty('--palette-bg', `linear-gradient(135deg, ${bg1}, ${bg2})`)
-		document.documentElement.style.removeProperty('--palette-solid')
-	}
-}
-
 function applyColor(color) {
 	activeColor.value = activeColor.value === color ? null : color
-	if (activeColor.value) {
-		document.documentElement.style.setProperty('--palette-solid', color)
-		document.documentElement.style.setProperty('--palette-bg', 'none')
-	} else {
-		document.documentElement.style.removeProperty('--palette-solid')
-		applyPaletteTheme()
-	}
 }
 
 // CSS generation
@@ -308,7 +290,6 @@ function extractColors() {
 			)
 			if (colors.value.length > 0) addToHistory(colors.value)
 			generateCSS()
-			applyPaletteTheme()
 		} catch (error) {
 			console.error('Error extracting colors:', error)
 			showNotification('Error extracting colors', 'error')
@@ -474,8 +455,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	cleanupNotification()
 	cleanupVoice()
-	document.documentElement.style.removeProperty('--palette-bg')
-	document.documentElement.style.removeProperty('--palette-solid')
 })
 </script>
 

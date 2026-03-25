@@ -29,7 +29,7 @@
 				<div class="bg-[#1f2020] border border-[#484848]/30 rounded-sm p-8 max-w-lg mx-4 shadow-2xl"
 					@click.stop>
 					<div class="flex justify-between items-center mb-6">
-						<h3 class="text-2xl font-headline font-bold tracking-tight text-[#f9f9f9]">About CURATOR</h3>
+						<h3 class="text-[#e7e5e4] text-2xl font-headline font-bold tracking-tight">About CURATOR</h3>
 						<button @click="showCredits = false"
 							class="text-[#acabaa] hover:text-[#f9f9f9] transition-colors">
 							<span class="material-symbols-outlined">close</span>
@@ -40,7 +40,7 @@
 							digital architects.</p>
 						<p>Built with Vue.js and TailwindCSS, it leverages the ColorThief library to analyze images and
 							extract dominant colors with precision.</p>
-						<h4 class="font-label text-xs uppercase tracking-widest text-[#767575] mt-6">Credits</h4>
+						<h4 class="text-[#e7e5e4] font-label text-xs uppercase tracking-widest text-[#767575] mt-6">Credits</h4>
 						<ul class="space-y-2 mt-2">
 							<li>Images provided by <a href="https://unsplash.com" target="_blank"
 									class="text-[#c7c6c5] hover:underline">Unsplash</a></li>
@@ -52,7 +52,7 @@
 					</div>
 					<div class="mt-8 flex justify-end">
 						<button @click="showCredits = false"
-							class="editorial-gradient text-[#3f403f] px-6 py-2 rounded-sm text-sm font-bold tracking-tight hover:brightness-110 transition-all">Close</button>
+							class="bg-gray-50 text-[#3f403f] px-6 py-2 rounded-sm text-sm font-bold tracking-tight hover:brightness-110 transition-all">Close</button>
 					</div>
 				</div>
 			</div>

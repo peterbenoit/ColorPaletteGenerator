@@ -1,7 +1,7 @@
 <template>
 	<section class="grid grid-cols-1 md:grid-cols-2 gap-24 mt-10">
 		<div>
-			<h4 class="text-2xl font-headline font-bold mb-10 tracking-tight">The Methodology</h4>
+			<h4 class="text-[#e7e5e4] text-2xl font-headline font-bold mb-10 tracking-tight">The Methodology</h4>
 			<div class="space-y-12">
 				<div class="flex gap-6">
 					<span class="font-headline text-4xl font-extralight text-[#484848]">01</span>
@@ -32,8 +32,8 @@
 			</div>
 		</div>
 		<div class="bg-[#1f2020] p-12 rounded-sm relative overflow-hidden">
-			<div class="absolute -right-12 -bottom-12 w-48 h-48 editorial-gradient opacity-10 blur-3xl"></div>
-			<h4 class="text-2xl font-headline font-bold mb-8 tracking-tight">Curator Pro Tips</h4>
+			<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-gray-50 opacity-10 blur-3xl"></div>
+			<h4 class="text-[#e7e5e4] text-2xl font-headline font-bold mb-8 tracking-tight">Curator Pro Tips</h4>
 			<ul class="space-y-6">
 				<li class="flex items-start gap-4">
 					<span class="material-symbols-outlined text-[#c7c6c5] mt-1">lightbulb</span>

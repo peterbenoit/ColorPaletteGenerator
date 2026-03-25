@@ -11,10 +11,6 @@
 				<a href="#" @click.prevent="openCredits"
 					class="font-headline tracking-tight font-medium text-sm text-[#acabaa] hover:text-[#f9f9f9] transition-colors duration-300">About</a>
 			</div>
-			<a href="https://unsplash.com" target="_blank"
-				class="border border-[#484848]/60 text-[#acabaa] px-6 py-2 rounded-sm text-sm font-bold tracking-tight hover:border-[#767575] hover:text-[#f9f9f9] transition-all">
-				Powered by Unsplash
-			</a>
 		</nav>
 	</header>
 </template>
