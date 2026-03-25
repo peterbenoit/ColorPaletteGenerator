@@ -7,16 +7,15 @@
 			<div
 				class="flex flex-col md:flex-row justify-between items-center px-8 w-full gap-8 max-w-screen-2xl mx-auto">
 				<div class="font-label text-[10px] uppercase tracking-widest text-[#acabaa]">
-					© {{ new Date().getFullYear() }} THE DIGITAL CURATOR. ALL RIGHTS RESERVED.
+					© {{ new Date().getFullYear() }} <a href="https://www.peterbenoit.com" target="_blank"
+						class="font-label text-[10px] uppercase tracking-widest text-[#acabaa] hover:text-[#c7c6c5] transition-colors">Peter
+						Benoit</a>
 				</div>
 				<div class="flex gap-8">
 					<a href="https://github.com/peterbenoit/ColorPaletteGenerator" target="_blank"
 						class="font-label text-[10px] uppercase tracking-widest text-[#acabaa] hover:text-[#c7c6c5] transition-colors">GitHub</a>
 					<a href="#" @click.prevent="showCredits = true"
 						class="font-label text-[10px] uppercase tracking-widest text-[#acabaa] hover:text-[#c7c6c5] transition-colors">About</a>
-					<a href="https://www.peterbenoit.com" target="_blank"
-						class="font-label text-[10px] uppercase tracking-widest text-[#acabaa] hover:text-[#c7c6c5] transition-colors">Peter
-						Benoit</a>
 				</div>
 			</div>
 		</footer>

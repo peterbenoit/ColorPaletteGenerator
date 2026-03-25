@@ -182,7 +182,7 @@
 			</section>
 
 			<!-- Archives: Recent Palettes -->
-			<section v-if="paletteHistory.length > 0" class="mb-32">
+			<section v-if="paletteHistory.length > 0" class="mb-24">
 				<div class="flex justify-between items-end mb-12">
 					<div>
 						<h3 class="text-[#e7e5e4] text-4xl font-headline font-bold tracking-tighter">Archives</h3>
