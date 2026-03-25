@@ -60,7 +60,7 @@
 			</section>
 
 			<!-- Main Workspace: Image & Extraction -->
-			<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12 items-start">
+			<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-24 items-start">
 				<!-- Image Canvas -->
 				<div class="lg:col-span-7 bg-[#131313] p-2 rounded-sm relative group overflow-hidden">
 					<div
@@ -101,7 +101,7 @@
 			<div class="lg:col-span-5 flex flex-col justify-between self-start">
 					<div>
 						<div class="flex items-center justify-between mb-8">
-							<h2 class="text-3xl font-headline font-bold tracking-tight">Extracted Spectrum</h2>
+							<h2 class="text-[#e7e5e4] text-3xl font-headline font-bold tracking-tight">Extracted Spectrum</h2>
 							<div class="flex gap-2">
 								<button v-for="size in [5, 7, 9]" :key="size" @click="changePaletteSize(size)"
 									class="px-3 py-1 rounded-sm text-xs font-label uppercase tracking-widest text-[#acabaa] hover:bg-[#252626] transition-colors border border-transparent"
@@ -124,7 +124,7 @@
 								</div>
 							</div>
 
-							<div v-for="(color, index) in colors" :key="index" class="flex items-center gap-6 group cursor-pointer"
+							<div v-for="(color, index) in colors" :key="index" class="flex items-center gap-6 group cursor-pointer pl-2"
 								@click="applyColor(color)">
 								<div :style="{ backgroundColor: color }"
 									class="w-28 h-14 rounded-sm shrink-0 shadow-2xl transition-transform group-hover:scale-105"
@@ -133,7 +133,7 @@
 								<div class="flex flex-col gap-1">
 									<span
 										class="font-label text-[10px] uppercase tracking-widest text-[#acabaa]">{{ getColorName(color) }}</span>
-									<span class="text-2xl font-headline font-bold tracking-tighter">{{ rgbToHex(color)
+									<span class="text-[#e7e5e4] text-2xl font-headline font-bold tracking-tighter">{{ rgbToHex(color)
 										}}</span>
 									<span class="font-label text-[10px] text-[#767575]">{{ color }}</span>
 								</div>
