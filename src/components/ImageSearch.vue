@@ -447,7 +447,11 @@ async function exportToPNG() {
 // Share palette via URL hash
 function sharePalette() {
 	const hexColors = colors.value.map(c => rgbToHex(c).slice(1)).join(',')
-	window.location.hash = 'palette=' + hexColors
+	let hash = 'palette=' + hexColors
+	if (imageUrl.value && imageUrl.value.startsWith('https://')) {
+		hash += '&img=' + encodeURIComponent(imageUrl.value)
+	}
+	window.location.hash = hash
 	navigator.clipboard.writeText(window.location.href)
 		.then(() => showNotification('Share link copied!', 'share'))
 		.catch(() => showNotification('Failed to copy link', 'error'))
@@ -464,11 +468,16 @@ function copyCSSToClipboard() {
 onMounted(() => {
 	const hash = window.location.hash.slice(1)
 	if (hash.startsWith('palette=')) {
-		const hexList = hash.replace('palette=', '').split(',')
-		colors.value = hexList
-			.filter(h => /^[0-9a-f]{6}$/i.test(h))
-			.map(h => `rgb(${parseInt(h.slice(0,2),16)}, ${parseInt(h.slice(2,4),16)}, ${parseInt(h.slice(4,6),16)})`)
-		if (colors.value.length > 0) generateCSS()
+		const params = new URLSearchParams(hash)
+		const paletteParam = params.get('palette')
+		const imgParam = params.get('img')
+		if (paletteParam) {
+			colors.value = paletteParam.split(',')
+				.filter(h => /^[0-9a-f]{6}$/i.test(h))
+				.map(h => `rgb(${parseInt(h.slice(0,2),16)}, ${parseInt(h.slice(2,4),16)}, ${parseInt(h.slice(4,6),16)})`)
+			if (colors.value.length > 0) generateCSS()
+		}
+		if (imgParam) imageUrl.value = imgParam
 	} else {
 		query.value = suggestions[Math.floor(Math.random() * suggestions.length)]
 		fetchImage()
