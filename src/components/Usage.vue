@@ -7,9 +7,8 @@
 					<span class="font-headline text-4xl font-extralight text-[#484848]">01</span>
 					<div>
 						<h5 class="font-headline font-bold mb-2 text-[#e7e5e4]">Image Ingestion</h5>
-						<p class="text-sm text-[#acabaa] leading-relaxed">Provide a URL search or local file. Our
-							system
-							uses ColorThief to identify dominant tonal clusters in the bitmap.</p>
+						<p class="text-sm text-[#acabaa] leading-relaxed">Search Unsplash for an image, or provide a local file. Our
+							system uses ColorThief to identify dominant tonal clusters in the bitmap.</p>
 					</div>
 				</div>
 				<div class="flex gap-6">
