@@ -445,16 +445,32 @@ async function exportToPNG() {
 }
 
 // Share palette via URL hash
-function sharePalette() {
+async function sharePalette() {
 	const hexColors = colors.value.map(c => rgbToHex(c).slice(1)).join(',')
 	let hash = 'palette=' + hexColors
 	if (imageUrl.value && imageUrl.value.startsWith('https://')) {
 		hash += '&img=' + encodeURIComponent(imageUrl.value)
 	}
 	window.location.hash = hash
-	navigator.clipboard.writeText(window.location.href)
-		.then(() => showNotification('Share link copied!', 'share'))
-		.catch(() => showNotification('Failed to copy link', 'error'))
+
+	try {
+		const res = await fetch('https://smawl.vercel.app/api/shorten', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ url: window.location.href }),
+		})
+		if (!res.ok) throw new Error('shorten failed')
+		const { shortUrl } = await res.json()
+		await navigator.clipboard.writeText(shortUrl)
+		showNotification('Short link copied!', 'share')
+	} catch {
+		try {
+			await navigator.clipboard.writeText(window.location.href)
+			showNotification('Share link copied!', 'share')
+		} catch {
+			showNotification('Failed to copy link', 'error')
+		}
+	}
 }
 
 // Clipboard
