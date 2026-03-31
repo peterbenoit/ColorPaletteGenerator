@@ -43,7 +43,7 @@
 						<button @click="uploadImage"
 							class="bg-[#1f2020] text-[#e7e5e4] border border-[#484848]/20 py-4 rounded-sm flex items-center justify-center gap-3 hover:bg-[#2c2c2c] transition-colors">
 							<span class="material-symbols-outlined">upload_file</span>
-							<span class="font-label text-xs uppercase tracking-widest font-semibold">Upload Local
+							<span class="font-label text-xs uppercase tracking-widest font-semibold">Upload
 								Image</span>
 						</button>
 						<!-- Suggestion chips -->
