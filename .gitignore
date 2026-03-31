@@ -8,3 +8,5 @@ BACKLOG.md
 design.html
 image.png
 output.png
+.vercel
+.env*.local
