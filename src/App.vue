@@ -35,11 +35,10 @@
 						</button>
 					</div>
 					<div class="space-y-4 text-sm text-[#acabaa] leading-relaxed">
-						<p>A high-end image color palette generator for photographers, brand strategists, and
-							digital architects.</p>
+						<p>Drop in an image, get a color palette. Export CSS variables, HEX, or RGB instantly.</p>
 						<p>Built with Vue.js and TailwindCSS, it leverages the ColorThief library to analyze images and
 							extract dominant colors with precision.</p>
-						<h4 class="text-[#e7e5e4] font-label text-xs uppercase tracking-widest text-[#767575] mt-6">Credits</h4>
+						<h4 class="font-label text-xs uppercase tracking-widest text-[#9a9a9a] mt-6">Credits</h4>
 						<ul class="space-y-2 mt-2">
 							<li>Images provided by <a href="https://unsplash.com" target="_blank"
 									class="text-[#c7c6c5] hover:underline">Unsplash</a></li>

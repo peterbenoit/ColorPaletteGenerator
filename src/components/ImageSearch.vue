@@ -18,8 +18,7 @@
 							Visual <br /><span class="text-[#b9b9b7]">Chromatics.</span>
 						</h1>
 						<p class="font-body text-xl text-[#acabaa] max-w-xl leading-relaxed">
-							Extract sophisticated palettes from imagery with clinical precision. Designed for
-							photographers, brand strategists, and digital architects.
+						Pull colors from any image and get CSS-ready palettes in seconds. Works with Unsplash search or your own files.
 						</p>
 					</div>
 					<div class="md:w-1/3 flex flex-col gap-4">
@@ -85,7 +84,7 @@
 
 					<!-- Photographer credit -->
 					<p v-if="isUnsplashImage && photographerName"
-						class="mt-2 px-1 text-[10px] font-label uppercase tracking-widest text-[#767575] flex items-center gap-1">
+							class="mt-2 px-1 text-[10px] font-label uppercase tracking-widest text-[#9a9a9a] flex items-center gap-1">
 						<span class="material-symbols-outlined text-sm">photo_camera</span>
 						Photo by
 						<a :href="`${photographerProfile}?utm_source=visual_chromatics&utm_medium=referral`"
@@ -101,7 +100,8 @@
 					<div>
 						<div class="flex items-center justify-between mb-8">
 							<h2 class="text-[#e7e5e4] text-3xl font-headline font-bold tracking-tight">Extracted Spectrum</h2>
-							<div class="flex gap-2">
+						<div class="flex gap-2 items-center">
+							<span class="font-label text-[10px] uppercase tracking-widest text-[#9a9a9a]">Colors:</span>
 								<button v-for="size in [5, 7, 9]" :key="size" @click="changePaletteSize(size)"
 									class="px-3 py-1 rounded-sm text-xs font-label uppercase tracking-widest text-[#acabaa] hover:bg-[#252626] transition-colors border border-transparent"
 									:class="{ 'border-[#484848] text-[#e7e5e4] bg-[#1f2020]': paletteSize === size }">
@@ -112,13 +112,17 @@
 
 						<!-- Color items -->
 					<div class="space-y-4 max-h-[250px] overflow-y-auto pr-1">
-							<div v-if="colors.length === 0" class="space-y-4">
-								<div v-for="i in 3" :key="i" class="flex items-center gap-6">
-									<div class="w-28 h-14 bg-[#252626] rounded-sm shrink-0 animate-pulse"></div>
-									<div class="flex flex-col gap-2 flex-1">
-										<div class="h-3 bg-[#252626] rounded animate-pulse w-20"></div>
-										<div class="h-6 bg-[#1f2020] rounded animate-pulse w-32"></div>
-										<div class="h-2 bg-[#252626] rounded animate-pulse w-24"></div>
+<div v-if="colors.length === 0" class="flex flex-col items-center justify-center gap-6 py-8 text-center">
+							<p class="text-[#acabaa] text-sm">Search an image or upload your own to get started</p>
+							<div class="flex gap-8">
+								<div class="flex flex-col items-center gap-2 text-[#9a9a9a]">
+									<span class="material-symbols-outlined text-3xl">search</span>
+									<span class="font-label text-[10px] uppercase tracking-widest">Search</span>
+								</div>
+								<div class="text-[#484848] self-center text-sm">or</div>
+								<div class="flex flex-col items-center gap-2 text-[#9a9a9a]">
+									<span class="material-symbols-outlined text-3xl">upload_file</span>
+									<span class="font-label text-[10px] uppercase tracking-widest">Upload</span>
 									</div>
 								</div>
 							</div>
@@ -134,7 +138,7 @@
 										class="font-label text-[10px] uppercase tracking-widest text-[#acabaa]">{{ getColorName(color) }}</span>
 									<span class="text-[#e7e5e4] text-2xl font-headline font-bold tracking-tighter">{{ rgbToHex(color)
 										}}</span>
-									<span class="font-label text-[10px] text-[#767575]">{{ color }}</span>
+										<span class="font-label text-[10px] text-[#9a9a9a]">{{ color }}</span>
 								</div>
 								<button @click.stop="copyColor(color)"
 									class="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
@@ -151,7 +155,7 @@
 								<button v-for="fmt in ['RGB', 'HEX', 'HSL']" :key="fmt"
 									@click="setFormat(fmt)"
 									class="font-label text-[10px] uppercase tracking-widest px-3 py-1 rounded-sm transition-colors"
-									:class="formatType === fmt ? 'bg-[#252626] text-[#e7e5e4]' : 'text-[#767575] hover:text-[#acabaa]'">
+									:class="formatType === fmt ? 'bg-[#252626] text-[#e7e5e4]' : 'text-[#9a9a9a] hover:text-[#acabaa]'">
 									{{ fmt }}
 								</button>
 							</div>
@@ -176,8 +180,11 @@
 						class="mt-4 w-full py-3 border border-[#484848]/30 text-xs font-bold uppercase tracking-[0.2em] text-[#acabaa] hover:bg-[#e7e5e4] hover:text-[#0e0e0e] transition-colors rounded-sm">
 						<span class="material-symbols-outlined text-sm align-middle mr-2">download</span>
 						Export PNG
-					</button>
-				</div>
+					</button>				<button v-if="colors.length > 0" @click="sharePalette"
+					class="mt-2 w-full py-3 border border-[#484848]/30 text-xs font-bold uppercase tracking-[0.2em] text-[#acabaa] hover:bg-[#e7e5e4] hover:text-[#0e0e0e] transition-colors rounded-sm">
+					<span class="material-symbols-outlined text-sm align-middle mr-2">share</span>
+					Share Palette
+				</button>				</div>
 			</section>
 
 			<!-- Archives: Recent Palettes -->
@@ -197,7 +204,7 @@
 							<div v-for="(color, cIndex) in palette.colors" :key="`${pIndex}-${cIndex}`"
 								:style="{ backgroundColor: color }" class="flex-1 rounded-sm"></div>
 						</div>
-						<span class="font-label text-[9px] uppercase tracking-widest text-[#767575]">{{ palette.colors.length }} colors</span>
+						<span class="font-label text-[10px] uppercase tracking-widest text-[#9a9a9a]">{{ palette.colors.length }} colors</span>
 					</div>
 				</div>
 			</section>
@@ -437,6 +444,15 @@ async function exportToPNG() {
 	}
 }
 
+// Share palette via URL hash
+function sharePalette() {
+	const hexColors = colors.value.map(c => rgbToHex(c).slice(1)).join(',')
+	window.location.hash = 'palette=' + hexColors
+	navigator.clipboard.writeText(window.location.href)
+		.then(() => showNotification('Share link copied!', 'share'))
+		.catch(() => showNotification('Failed to copy link', 'error'))
+}
+
 // Clipboard
 function copyCSSToClipboard() {
 	navigator.clipboard.writeText(cssContent.value)
@@ -446,8 +462,17 @@ function copyCSSToClipboard() {
 
 // Lifecycle
 onMounted(() => {
-	query.value = suggestions[Math.floor(Math.random() * suggestions.length)]
-	fetchImage()
+	const hash = window.location.hash.slice(1)
+	if (hash.startsWith('palette=')) {
+		const hexList = hash.replace('palette=', '').split(',')
+		colors.value = hexList
+			.filter(h => /^[0-9a-f]{6}$/i.test(h))
+			.map(h => `rgb(${parseInt(h.slice(0,2),16)}, ${parseInt(h.slice(2,4),16)}, ${parseInt(h.slice(4,6),16)})`)
+		if (colors.value.length > 0) generateCSS()
+	} else {
+		query.value = suggestions[Math.floor(Math.random() * suggestions.length)]
+		fetchImage()
+	}
 })
 
 // BUG-5: clean up timers and voice listeners on unmount

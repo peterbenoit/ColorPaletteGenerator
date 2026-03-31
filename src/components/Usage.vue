@@ -4,28 +4,24 @@
 			<h4 class="text-[#e7e5e4] text-2xl font-headline font-bold mb-10 tracking-tight">The Methodology</h4>
 			<div class="space-y-12">
 				<div class="flex gap-6">
-					<span class="font-headline text-4xl font-extralight text-[#484848]">01</span>
+					<span class="font-headline text-4xl font-extralight text-[#6b6b6b]">01</span>
 					<div>
-						<h5 class="font-headline font-bold mb-2 text-[#e7e5e4]">Image Ingestion</h5>
-						<p class="text-sm text-[#acabaa] leading-relaxed">Search Unsplash for an image, or provide a local file. Our
-							system uses ColorThief to identify dominant tonal clusters in the bitmap.</p>
+					<h5 class="font-headline font-bold mb-2 text-[#e7e5e4]">Start with an image</h5>
+					<p class="text-sm text-[#acabaa] leading-relaxed">Search Unsplash or drop in your own file. Anything with visual contrast works.</p>
 					</div>
 				</div>
 				<div class="flex gap-6">
-					<span class="font-headline text-4xl font-extralight text-[#484848]">02</span>
+					<span class="font-headline text-4xl font-extralight text-[#6b6b6b]">02</span>
 					<div>
-						<h5 class="font-headline font-bold mb-2 text-[#e7e5e4]">Nuance Extraction</h5>
-						<p class="text-sm text-[#acabaa] leading-relaxed">We bypass generic averaging, instead
-							targeting specific visual anchors that define the image's emotional atmosphere via k-means
-							clustering.</p>
+					<h5 class="font-headline font-bold mb-2 text-[#e7e5e4]">Colors get extracted</h5>
+					<p class="text-sm text-[#acabaa] leading-relaxed">ColorThief groups the image's dominant colors together, so you get the palette that actually defines the image — not just an average.</p>
 					</div>
 				</div>
 				<div class="flex gap-6">
-					<span class="font-headline text-4xl font-extralight text-[#484848]">03</span>
+					<span class="font-headline text-4xl font-extralight text-[#6b6b6b]">03</span>
 					<div>
-						<h5 class="font-headline font-bold mb-2 text-[#e7e5e4]">Export & Deploy</h5>
-						<p class="text-sm text-[#acabaa] leading-relaxed">Copy ready-to-use CSS variables directly into
-							your design system, or export a PNG swatch palette for documentation and presentations.</p>
+					<h5 class="font-headline font-bold mb-2 text-[#e7e5e4]">Copy and use instantly</h5>
+					<p class="text-sm text-[#acabaa] leading-relaxed">Copy the CSS variables straight into your project, or export a PNG swatch for docs and presentations.</p>
 					</div>
 				</div>
 			</div>
@@ -49,8 +45,7 @@
 				<li class="flex items-start gap-4">
 					<span class="material-symbols-outlined text-[#c7c6c5] mt-1">mic</span>
 					<p class="text-sm text-[#acabaa] leading-relaxed"><strong class="text-[#e7e5e4]">Voice
-							Search:</strong> Hands-free image discovery — speak your concept and VISUAL CHROMATICS finds it
-						instantly.</p>
+							Search:</strong> Tap the mic icon and speak your concept — Visual Chromatics searches Unsplash hands-free.</p>
 				</li>
 				<li class="flex items-start gap-4">
 					<span class="material-symbols-outlined text-[#c7c6c5] mt-1">palette</span>
