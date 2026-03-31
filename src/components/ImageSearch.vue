@@ -15,7 +15,8 @@
 							class="font-label text-xs uppercase tracking-[0.3em] text-[#acabaa] mb-6 block">Visual Chromatics / Professional Tooling</span>
 						<h1
 							class="text-6xl md:text-8xl font-headline font-extrabold tracking-tighter leading-none mb-8">
-							Visual <br /><span class="text-[#b9b9b7]">Chromatics.</span>
+							Visual <br /><span
+								class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-amber-600">Chromatics.</span>
 						</h1>
 						<p class="font-body text-xl text-[#acabaa] max-w-xl leading-relaxed">
 						Pull colors from any image and get CSS-ready palettes in seconds. Works with Unsplash search or your own files.
