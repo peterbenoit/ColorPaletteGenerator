@@ -12,8 +12,7 @@
 				<div class="flex flex-col md:flex-row gap-16 items-end">
 					<div class="md:w-2/3">
 						<span
-							class="font-label text-xs uppercase tracking-[0.3em] text-[#acabaa] mb-6 block">The Digital
-							Curator / Professional Tooling</span>
+							class="font-label text-xs uppercase tracking-[0.3em] text-[#acabaa] mb-6 block">Visual Chromatics / Professional Tooling</span>
 						<h1
 							class="text-6xl md:text-8xl font-headline font-extrabold tracking-tighter leading-none mb-8">
 							Visual <br /><span class="text-[#b9b9b7]">Chromatics.</span>
@@ -89,10 +88,10 @@
 						class="mt-2 px-1 text-[10px] font-label uppercase tracking-widest text-[#767575] flex items-center gap-1">
 						<span class="material-symbols-outlined text-sm">photo_camera</span>
 						Photo by
-						<a :href="`${photographerProfile}?utm_source=curator_palette&utm_medium=referral`"
+						<a :href="`${photographerProfile}?utm_source=visual_chromatics&utm_medium=referral`"
 							target="_blank" class="text-[#acabaa] hover:text-[#c7c6c5] ml-1">{{ photographerName }}</a>
 						<span class="mx-1">on</span>
-						<a href="https://unsplash.com?utm_source=curator_palette&utm_medium=referral"
+						<a href="https://unsplash.com?utm_source=visual_chromatics&utm_medium=referral"
 							target="_blank" class="text-[#acabaa] hover:text-[#c7c6c5]">Unsplash</a>
 					</p>
 				</div>

@@ -28,14 +28,14 @@
 				<div class="bg-[#1f2020] border border-[#484848]/30 rounded-sm p-8 max-w-lg mx-4 shadow-2xl"
 					@click.stop>
 					<div class="flex justify-between items-center mb-6">
-						<h3 class="text-[#e7e5e4] text-2xl font-headline font-bold tracking-tight">About CURATOR</h3>
+						<h3 class="text-[#e7e5e4] text-2xl font-headline font-bold tracking-tight">About</h3>
 						<button @click="showCredits = false"
 							class="text-[#acabaa] hover:text-[#f9f9f9] transition-colors">
 							<span class="material-symbols-outlined">close</span>
 						</button>
 					</div>
 					<div class="space-y-4 text-sm text-[#acabaa] leading-relaxed">
-						<p>CURATOR is a high-end image color palette generator for photographers, brand strategists, and
+						<p>A high-end image color palette generator for photographers, brand strategists, and
 							digital architects.</p>
 						<p>Built with Vue.js and TailwindCSS, it leverages the ColorThief library to analyze images and
 							extract dominant colors with precision.</p>

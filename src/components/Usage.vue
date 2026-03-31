@@ -33,7 +33,7 @@
 		</div>
 		<div class="bg-[#1f2020] p-12 rounded-sm relative overflow-hidden">
 			<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-gray-50 opacity-10 blur-3xl"></div>
-			<h4 class="text-[#e7e5e4] text-2xl font-headline font-bold mb-8 tracking-tight">Curator Pro Tips</h4>
+			<h4 class="text-[#e7e5e4] text-2xl font-headline font-bold mb-8 tracking-tight">Pro Tips</h4>
 			<ul class="space-y-6">
 				<li class="flex items-start gap-4">
 					<span class="material-symbols-outlined text-[#c7c6c5] mt-1">lightbulb</span>
@@ -50,7 +50,7 @@
 				<li class="flex items-start gap-4">
 					<span class="material-symbols-outlined text-[#c7c6c5] mt-1">mic</span>
 					<p class="text-sm text-[#acabaa] leading-relaxed"><strong class="text-[#e7e5e4]">Voice
-							Search:</strong> Hands-free image discovery — speak your concept and CURATOR finds it
+							Search:</strong> Hands-free image discovery — speak your concept and VISUAL CHROMATICS finds it
 						instantly.</p>
 				</li>
 				<li class="flex items-start gap-4">
