@@ -452,6 +452,9 @@ async function sharePalette() {
 	if (imageUrl.value && imageUrl.value.startsWith('https://')) {
 		hash += '&img=' + encodeURIComponent(imageUrl.value)
 	}
+	if (query.value.trim()) {
+		hash += '&q=' + encodeURIComponent(query.value.trim())
+	}
 	window.location.hash = hash
 
 	try {
@@ -495,6 +498,8 @@ onMounted(() => {
 			if (colors.value.length > 0) generateCSS()
 		}
 		if (imgParam) imageUrl.value = imgParam
+		const queryParam = params.get('q')
+		if (queryParam) query.value = queryParam
 	} else {
 		query.value = suggestions[Math.floor(Math.random() * suggestions.length)]
 		fetchImage()
