@@ -1,5 +1,5 @@
 <template>
-	<section class="grid grid-cols-1 md:grid-cols-2 gap-24 mt-10">
+	<section class="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24 mt-10">
 		<div>
 			<h4 class="text-[#e7e5e4] text-2xl font-headline font-bold mb-10 tracking-tight">The Methodology</h4>
 			<div class="space-y-12">
@@ -26,7 +26,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="bg-[#1f2020] p-12 rounded-sm relative overflow-hidden">
+		<div class="bg-[#1f2020] p-4 md:p-12 rounded-sm relative overflow-hidden">
 			<div class="absolute -right-12 -bottom-12 w-48 h-48 bg-gray-50 opacity-10 blur-3xl"></div>
 			<h4 class="text-[#e7e5e4] text-2xl font-headline font-bold mb-8 tracking-tight">Pro Tips</h4>
 			<ul class="space-y-6">

@@ -5,10 +5,10 @@
 		<!-- QOL-2: declarative hidden file input driven by uploadImage() -->
 		<input ref="fileInputRef" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
 
-		<main class="max-w-screen-2xl mx-auto px-8 pt-16 pb-24">
+		<main class="max-w-screen-2xl mx-auto px-4 md:px-8 pt-16 pb-24">
 
 			<!-- Hero Section: Editorial Intro -->
-			<section class="mb-24">
+			<section class="mb-12 md:mb-24">
 				<div class="flex flex-col md:flex-row gap-16 items-end">
 					<div class="md:w-2/3">
 						<span
@@ -59,7 +59,7 @@
 			</section>
 
 			<!-- Main Workspace: Image & Extraction -->
-			<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-24 items-start">
+			<section class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-12 md:mb-24 items-start">
 				<!-- Image Canvas -->
 				<div class="lg:col-span-7 bg-[#131313] p-2 rounded-sm relative group overflow-hidden">
 					<div
@@ -189,7 +189,7 @@
 			</section>
 
 			<!-- Archives: Recent Palettes -->
-			<section v-if="paletteHistory.length > 0" class="mb-24">
+			<section v-if="paletteHistory.length > 0" class="mb-12 md:mb-24">
 				<div class="flex justify-between items-end mb-12">
 					<div>
 						<h3 class="text-[#e7e5e4] text-4xl font-headline font-bold tracking-tighter">Archives</h3>

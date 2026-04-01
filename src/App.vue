@@ -5,7 +5,7 @@
 		<!-- Footer -->
 		<footer class="border-t border-[#484848]/15 py-12">
 			<div
-				class="flex flex-col md:flex-row justify-between items-center px-8 w-full gap-8 max-w-screen-2xl mx-auto">
+				class="flex flex-col md:flex-row justify-between items-center px-4 md:px-8 w-full gap-8 max-w-screen-2xl mx-auto">
 				<div class="font-label text-[10px] uppercase tracking-widest text-[#acabaa]">
 					© {{ new Date().getFullYear() }} <a href="https://www.peterbenoit.com" target="_blank"
 						class="font-label text-[10px] uppercase tracking-widest text-[#acabaa] hover:text-[#c7c6c5] transition-colors">Peter
